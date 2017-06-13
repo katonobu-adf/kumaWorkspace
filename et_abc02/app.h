@@ -42,6 +42,7 @@ extern void bt_task(intptr_t exinf);
 // ‰œŽR’Ç‰Á <end>
 #endif /* TOPPERS_MACRO_ONLY */
 
+
 #ifdef __cplusplus
 }
 #endif
