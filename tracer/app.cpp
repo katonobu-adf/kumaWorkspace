@@ -18,7 +18,7 @@
 #endif
 
 /**
- * ã‚»ãƒ³ã‚µãƒ¼ã€ãƒ¢ãƒ¼ã‚¿ãƒ¼ã®æ¥ç¶šã‚’å®šç¾©ã—ã¾ã™
+ * ƒZƒ“ƒT[Aƒ‚[ƒ^[‚ÌÚ‘±‚ğ’è‹`‚µ‚Ü‚·
  */
 static const sensor_port_t
     touch_sensor    = EV3_PORT_1,
@@ -31,27 +31,27 @@ static const motor_port_t
     right_motor     = EV3_PORT_B,
     tail_motor      = EV3_PORT_A;
 
-static int      bt_cmd = 0;     /* Bluetoothã‚³ãƒãƒ³ãƒ‰ 1:ãƒªãƒ¢ãƒ¼ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆ */
-static FILE     *bt = NULL;     /* Bluetoothãƒ•ã‚¡ã‚¤ãƒ«ãƒãƒ³ãƒ‰ãƒ« */
+static int      bt_cmd = 0;     /* BluetoothƒRƒ}ƒ“ƒh 1:ƒŠƒ‚[ƒgƒXƒ^[ƒg */
+static FILE     *bt = NULL;     /* Bluetoothƒtƒ@ƒCƒ‹ƒnƒ“ƒhƒ‹ */
 
-/* ä¸‹è¨˜ã®ãƒã‚¯ãƒ­ã¯å€‹ä½“/ç’°å¢ƒã«åˆã‚ã›ã¦å¤‰æ›´ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ */
-/* sample_c1ãƒã‚¯ãƒ­ */
-#define GYRO_OFFSET  0          /* ã‚¸ãƒ£ã‚¤ãƒ­ã‚»ãƒ³ã‚µã‚ªãƒ•ã‚»ãƒƒãƒˆå€¤(è§’é€Ÿåº¦0[deg/sec]æ™‚) */
-#define LIGHT_WHITE  48         /* ç™½è‰²ã®å…‰ã‚»ãƒ³ã‚µå€¤ */
-#define LIGHT_BLACK  0          /* é»’è‰²ã®å…‰ã‚»ãƒ³ã‚µå€¤ */
-/* sample_c2ãƒã‚¯ãƒ­ */
-#define SONAR_ALERT_DISTANCE 30 /* è¶…éŸ³æ³¢ã‚»ãƒ³ã‚µã«ã‚ˆã‚‹éšœå®³ç‰©æ¤œçŸ¥è·é›¢[cm] */
-/* sample_c3ãƒã‚¯ãƒ­ */
-#define TAIL_ANGLE_STAND_UP  90 /* å®Œå…¨åœæ­¢æ™‚ã®è§’åº¦[åº¦] */
-#define TAIL_ANGLE_DRIVE      3 /* ãƒãƒ©ãƒ³ã‚¹èµ°è¡Œæ™‚ã®è§’åº¦[åº¦] */
-#define P_GAIN             2.5F /* å®Œå…¨åœæ­¢ç”¨ãƒ¢ãƒ¼ã‚¿åˆ¶å¾¡æ¯”ä¾‹ä¿‚æ•° */
-#define PWM_ABS_MAX          60 /* å®Œå…¨åœæ­¢ç”¨ãƒ¢ãƒ¼ã‚¿åˆ¶å¾¡PWMçµ¶å¯¾æœ€å¤§å€¤ */
-/* sample_c4ãƒã‚¯ãƒ­ */
-//#define DEVICE_NAME     "ET0"  /* Bluetoothå hrp2/target/ev3.h BLUETOOTH_LOCAL_NAMEã§è¨­å®š */
-//#define PASS_KEY        "1234" /* ãƒ‘ã‚¹ã‚­ãƒ¼    hrp2/target/ev3.h BLUETOOTH_PIN_CODEã§è¨­å®š */
-#define CMD_START         '1'    /* ãƒªãƒ¢ãƒ¼ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆã‚³ãƒãƒ³ãƒ‰ */
+/* ‰º‹L‚Ìƒ}ƒNƒ‚ÍŒÂ‘Ì/ŠÂ‹«‚É‡‚í‚¹‚Ä•ÏX‚·‚é•K—v‚ª‚ ‚è‚Ü‚· */
+/* sample_c1ƒ}ƒNƒ */
+#define GYRO_OFFSET  0          /* ƒWƒƒƒCƒƒZƒ“ƒTƒIƒtƒZƒbƒg’l(Šp‘¬“x0[deg/sec]) */
+#define LIGHT_WHITE  48         /* ”’F‚ÌŒõƒZƒ“ƒT’l */
+#define LIGHT_BLACK  0          /* •F‚ÌŒõƒZƒ“ƒT’l */
+/* sample_c2ƒ}ƒNƒ */
+#define SONAR_ALERT_DISTANCE 30 /* ’´‰¹”gƒZƒ“ƒT‚É‚æ‚éáŠQ•¨ŒŸ’m‹——£[cm] */
+/* sample_c3ƒ}ƒNƒ */
+#define TAIL_ANGLE_STAND_UP  90 /* Š®‘S’â~‚ÌŠp“x[“x] */
+#define TAIL_ANGLE_DRIVE      3 /* ƒoƒ‰ƒ“ƒX‘–s‚ÌŠp“x[“x] */
+#define P_GAIN             2.5F /* Š®‘S’â~—pƒ‚[ƒ^§Œä”ä—áŒW” */
+#define PWM_ABS_MAX          60 /* Š®‘S’â~—pƒ‚[ƒ^§ŒäPWMâ‘ÎÅ‘å’l */
+/* sample_c4ƒ}ƒNƒ */
+//#define DEVICE_NAME     "ET0"  /* Bluetooth–¼ hrp2/target/ev3.h BLUETOOTH_LOCAL_NAME‚Åİ’è */
+//#define PASS_KEY        "1234" /* ƒpƒXƒL[    hrp2/target/ev3.h BLUETOOTH_PIN_CODE‚Åİ’è */
+#define CMD_START         '1'    /* ƒŠƒ‚[ƒgƒXƒ^[ƒgƒRƒ}ƒ“ƒh */
 
-/* LCDãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚º */
+/* LCDƒtƒHƒ“ƒgƒTƒCƒY */
 #define CALIB_FONT (EV3_FONT_SMALL)
 #define CALIB_FONT_WIDTH (6/*TODO: magic number*/)
 #define CALIB_FONT_HEIGHT (8/*TODO: magic number*/)
@@ -72,7 +72,7 @@ const double KP = (0.6 * KC);
 const double TI = (0.5 * TC);
 const double TD = (0.125 * TC);
 
-/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
+/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
 int limiter(float num, float min, float max);
 int limiter(int num, int min, int max);
 int turner(int sensor_val);
@@ -125,9 +125,9 @@ int abs(int num) {
 }// end abs
 
 static void tail_control(signed int angle) {
-    float pwm = (float)(angle - ev3_motor_get_counts(tail_motor))*P_GAIN; /* æ¯”ä¾‹åˆ¶å¾¡ */
+    float pwm = (float)(angle - ev3_motor_get_counts(tail_motor))*P_GAIN; /* ”ä—á§Œä */
 
-    /* PWMå‡ºåŠ›é£½å’Œå‡¦ç† */
+    /* PWMo—Í–O˜aˆ— */
     if (pwm > PWM_ABS_MAX) {
         pwm = PWM_ABS_MAX;
     } else if (pwm < -PWM_ABS_MAX) {
@@ -141,20 +141,20 @@ static void tail_control(signed int angle) {
     }// end if
 }// end tail_control
 
-/* ãƒ¡ã‚¤ãƒ³ã‚¿ã‚¹ã‚¯ */
+/* ƒƒCƒ“ƒ^ƒXƒN */
 void main_task(intptr_t unused) {
 
-    /* LCDç”»é¢è¡¨ç¤º */
+    /* LCD‰æ–Ê•\¦ */
     ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
     ev3_lcd_draw_string("EV3way-ET sample_c4", 0, CALIB_FONT_HEIGHT*1);
 
-    /* ã‚»ãƒ³ã‚µãƒ¼å…¥åŠ›ãƒãƒ¼ãƒˆã®è¨­å®š */
+    /* ƒZƒ“ƒT[“ü—Íƒ|[ƒg‚Ìİ’è */
     ev3_sensor_config(sonar_sensor, ULTRASONIC_SENSOR);
     ev3_sensor_config(color_sensor, COLOR_SENSOR);
-    ev3_color_sensor_get_reflect(color_sensor); /* åå°„ç‡ãƒ¢ãƒ¼ãƒ‰ */
+    ev3_color_sensor_get_reflect(color_sensor); /* ”½Ë—¦ƒ‚[ƒh */
     ev3_sensor_config(touch_sensor, TOUCH_SENSOR);
     ev3_sensor_config(gyro_sensor, GYRO_SENSOR);
-    /* ãƒ¢ãƒ¼ã‚¿ãƒ¼å‡ºåŠ›ãƒãƒ¼ãƒˆã®è¨­å®š */
+    /* ƒ‚[ƒ^[o—Íƒ|[ƒg‚Ìİ’è */
     ev3_motor_config(left_motor, LARGE_MOTOR);
     ev3_motor_config(right_motor, LARGE_MOTOR);
     ev3_motor_config(tail_motor, LARGE_MOTOR);
@@ -164,21 +164,21 @@ void main_task(intptr_t unused) {
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     assert(bt != NULL);
 
-    /* Bluetoothé€šä¿¡ã‚¿ã‚¹ã‚¯ã®èµ·å‹• */
+    /* Bluetooth’ÊMƒ^ƒXƒN‚Ì‹N“® */
     act_tsk(BT_TASK);
 
     ev3_led_set_color(LED_ORANGE);
 
     while(1) {
-        tail_control(TAIL_ANGLE_STAND_UP); /* å®Œå…¨åœæ­¢ç”¨è§’åº¦ã«åˆ¶å¾¡ */
+        tail_control(TAIL_ANGLE_STAND_UP); /* Š®‘S’â~—pŠp“x‚É§Œä */
 
         if (bt_cmd == 1)
-            break; /* ãƒªãƒ¢ãƒ¼ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆ */
+            break; /* ƒŠƒ‚[ƒgƒXƒ^[ƒg */
 
         if (ev3_touch_sensor_is_pressed(touch_sensor) == 1)
-            break; /* ã‚¿ãƒƒãƒã‚»ãƒ³ã‚µãŒæŠ¼ã•ã‚ŒãŸ */
+            break; /* ƒ^ƒbƒ`ƒZƒ“ƒT‚ª‰Ÿ‚³‚ê‚½ */
 
-        tslp_tsk(10); /* 10msecã‚¦ã‚§ã‚¤ãƒˆ */
+        tslp_tsk(10); /* 10msecƒEƒFƒCƒg */
     }// end while
 
     ev3_led_set_color(LED_GREEN);
@@ -228,15 +228,15 @@ void sonar_task(intptr_t unused) {
 }// end sonar_task
 
 void gyro_task(intptr_t unused) {
-    /* ã‚¸ãƒ£ã‚¤ãƒ­ã‚»ãƒ³ã‚µãƒ¼ãƒªã‚»ãƒƒãƒˆ */
+    /* ƒWƒƒƒCƒƒZƒ“ƒT[ƒŠƒZƒbƒg */
     ev3_gyro_sensor_reset(gyro_sensor);
     balancer.init(GYRO_OFFSET);
 
     while (true) {
         vals.setGyro(ev3_gyro_sensor_get_rate(gyro_sensor));
 
-        /* å€’ç«‹æŒ¯å­åˆ¶å¾¡APIã‚’å‘¼ã³å‡ºã—ã€å€’ç«‹èµ°è¡Œã™ã‚‹ãŸã‚ã® */
-        /* å·¦å³ãƒ¢ãƒ¼ã‚¿å‡ºåŠ›å€¤ã‚’å¾—ã‚‹ */
+        /* “|—§Uq§ŒäAPI‚ğŒÄ‚Ño‚µA“|—§‘–s‚·‚é‚½‚ß‚Ì */
+        /* ¶‰Eƒ‚[ƒ^o—Í’l‚ğ“¾‚é */
         balancer.setCommand(vals.getForward(), vals.getTurn());
         balancer.update(vals.getGyro(), vals.getMotor_ang_r(), vals.getMotor_ang_l(), vals.getVolt()); // <2>
 
@@ -255,16 +255,16 @@ void color_task(intptr_t unused) {
 }// end color_task
 
 void motor_task(intptr_t unused) {
-    signed char pwm_L, pwm_R; /* å·¦å³ãƒ¢ãƒ¼ã‚¿PWMå‡ºåŠ› */
+    signed char pwm_L, pwm_R; /* ¶‰Eƒ‚[ƒ^PWMo—Í */
 
-    /* èµ°è¡Œãƒ¢ãƒ¼ã‚¿ãƒ¼ã‚¨ãƒ³ã‚³ãƒ¼ãƒ€ãƒ¼ãƒªã‚»ãƒƒãƒˆ */
+    /* ‘–sƒ‚[ƒ^[ƒGƒ“ƒR[ƒ_[ƒŠƒZƒbƒg */
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
 
     while (true) {
-        tail_control(TAIL_ANGLE_DRIVE); /* ãƒãƒ©ãƒ³ã‚¹èµ°è¡Œç”¨è§’åº¦ã«åˆ¶å¾¡ */
+        tail_control(TAIL_ANGLE_DRIVE); /* ƒoƒ‰ƒ“ƒX‘–s—pŠp“x‚É§Œä */
 
-        if (vals.getAlert() == 1) { /* éšœå®³ç‰©æ¤œçŸ¥ */
+        if (vals.getAlert() == 1) { /* áŠQ•¨ŒŸ’m */
             vals.setTurn(0);
             vals.setForward(0);
         } else {
@@ -272,15 +272,15 @@ void motor_task(intptr_t unused) {
             vals.setForward(FORWARD - limiter(abs(vals.getTurn()), 0, 60));
         }// end if
 
-        /* å€’ç«‹æŒ¯å­åˆ¶å¾¡API ã«æ¸¡ã™ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’å–å¾—ã™ã‚‹ */
+        /* “|—§Uq§ŒäAPI ‚É“n‚·ƒpƒ‰ƒ[ƒ^‚ğæ“¾‚·‚é */
         vals.setMotor_ang_l(ev3_motor_get_counts(left_motor));
         vals.setMotor_ang_r(ev3_motor_get_counts(right_motor));
 
         pwm_L = balancer.getPwmRight();
         pwm_R = balancer.getPwmLeft();
 
-        /* EV3ã§ã¯ãƒ¢ãƒ¼ã‚¿ãƒ¼åœæ­¢æ™‚ã®ãƒ–ãƒ¬ãƒ¼ã‚­è¨­å®šãŒäº‹å‰ã«ã§ããªã„ãŸã‚ */
-        /* å‡ºåŠ›0æ™‚ã«ã€ãã®éƒ½åº¦è¨­å®šã™ã‚‹ */
+        /* EV3‚Å‚Íƒ‚[ƒ^[’â~‚ÌƒuƒŒ[ƒLİ’è‚ª–‘O‚É‚Å‚«‚È‚¢‚½‚ß */
+        /* o—Í0‚ÉA‚»‚Ì“s“xİ’è‚·‚é */
         if (pwm_L == 0) {
              ev3_motor_stop(left_motor, true);
         } else {
@@ -307,7 +307,7 @@ void voltage_task(intptr_t unused) {
 
 void bt_task(intptr_t unused) {
     while(1) {
-        uint8_t c = fgetc(bt); /* å—ä¿¡ */
+        uint8_t c = fgetc(bt); /* óM */
         switch(c) {
             case '0':
                 vals.setStop(true);
@@ -318,6 +318,6 @@ void bt_task(intptr_t unused) {
             default:
                 break;
         }// end switch
-        // fputc(c, bt); /* ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯ */
+        // fputc(c, bt); /* ƒGƒR[ƒoƒbƒN */
     }// end while
 }// end bt_task
