@@ -1,0 +1,39 @@
+13.1 サービスコール一覧
+
+(1) タスク管理機能
+
+	ER ercd = act_tsk(ID tskid)
+	ER ercd = iact_tsk(ID tskid)
+	ER_UINT	actcnt = can_act(ID tskid)
+	ER ercd = ext_tsk(void)
+	ER ercd = ter_tsk(ID tskid)
+	ER ercd = chg_pri(ID tskid, PRI tskpri)
+	ER ercd = get_pri(ID tskid, PRI *p_tskpri)
+	ER ercd = get_inf(intptr_t *p_exinf)
+	ER ercd = ref_tsk(ID tskid, T_RTSK *pk_rtsk)
+
+(2) タスク付属同期機能
+
+	ER ercd = slp_tsk(void)
+	ER ercd = tslp_tsk(TMO tmout)
+	ER ercd = wup_tsk(ID tskid)
+	ER ercd = iwup_tsk(ID tskid)
+	ER_UINT wupcnt = can_wup(ID tskid)
+	ER ercd = rel_wai(ID tskid)
+	ER ercd = irel_wai(ID tskid)
+	ER ercd = sus_tsk(ID tskid)
+	ER ercd = rsm_tsk(ID tskid)
+	ER ercd = dis_wai(ID tskid)
+	ER ercd = idis_wai(ID tskid)
+	ER ercd = ena_wai(ID tskid)
+	ER ercd = iena_wai(ID tskid)
+	ER ercd = dly_tsk(RELTIM dlytim)
+
+(3) タスク例外処理機能
+
+	ER ercd = ras_tex(ID tskid, TEXPTN rasptn)
+	ER ercd = iras_tex(ID tskid, TEXPTN rasptn)
+	ER ercd = dis_tex(void)
+	ER ercd = ena_tex(void)
+	bool_t state = sns_tex(void)
+	ER ercd = ref_tex(ID tskid, T_RTEX *pk_rtex)

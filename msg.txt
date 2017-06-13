@@ -1,0 +1,34 @@
+rm -rf /ev3rt/hrp2/sdk/workspace/.././OBJ/
+cd /ev3rt/hrp2/sdk/workspace/.././OBJ/ && \
+/ev3rt/hrp2/sdk/workspace/../../configure -T ev3_gcc -A app \
+	-a ../workspace/sample_pid \
+	-t ../workspace/sample_pid \
+	-D ../.. \
+	-L ../common/library \
+	-l c \
+	-m .ev3rt_temp_Makefile -o "-DBUILD_MODULE" \
+	-U "" && \
+rm /ev3rt/hrp2/sdk/workspace/sample_pid/.ev3rt_temp_Makefile && \
+mv .ev3rt_temp_Makefile Makefile && \
+make clean
+make[1]: Entering directory '/ev3rt/hrp2/sdk/OBJ'
+rm -f cfg1_out cfg1_out.o cfg1_out.c cfg1_out.syms cfg1_out.srec module_cfg.h module_cfg.c \#* *~ *.o
+make[1]: Leaving directory '/ev3rt/hrp2/sdk/OBJ'
+make[1]: Entering directory '/ev3rt/hrp2/sdk/OBJ'
+  CFG[1]  module_cfg.h
+  CFG[2]  module_cfg.h
+
+make[1]: Leaving directory '/ev3rt/hrp2/sdk/OBJ'
+make[1]: Entering directory '/ev3rt/hrp2/sdk/OBJ'
+  CC      module_cfg.c
+  CC      ../../library/t_perror.c
+  CC      ../../library/strerror.c
+  CC      ../../library/vasyslog.c
+  CC      ../../target/ev3_gcc/TLSF-2.4.6/src/tlsf.c
+  CC      app.c
+  CC      ../common/ev3api/src/ev3api.c
+  CC      ev3api_cfg.c
+  CC      ../common/ev3api/src/ev3api_battery.c
+  CC      ../common/ev3api/src/ev3api_brick.c
+  CC      ../common/ev3api/src/ev3api_fs.c
+make[1]: Leaving directory '/ev3rt/hrp2/sdk/OBJ'
