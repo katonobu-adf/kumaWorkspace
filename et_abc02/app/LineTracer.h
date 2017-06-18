@@ -18,6 +18,8 @@ public:
                BalancingWalker* balancingWalker);
 
     void run();
+    void stop();
+    void smoothStop();
 
 private:
 // 奥山追加 <begin>
@@ -39,6 +41,8 @@ private:
     float u_t;           /* 操作量計算領域（実数） */
     int temp_turn;       /* 操作量計算領域（整数） */
     unsigned short int m_val;     /* 観測値 */
+    
+
 // 奥山追加 <end>
 
     const LineMonitor* mLineMonitor;

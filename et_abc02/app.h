@@ -20,6 +20,7 @@ extern "C" {
 
 // 奥山追加 <begin>
 #define BT_TASK_PRIORITY  TMIN_APP_TPRI + 3
+#define MONITOR_TASK_PRIORITY  TMIN_APP_TPRI + 4
 // 奥山追加 <end>
 
 /*
@@ -39,6 +40,7 @@ extern void tracer_task(intptr_t exinf);
 extern void ev3_cyc_tracer(intptr_t exinf);
 // 奥山追加 <begin>
 extern void bt_task(intptr_t exinf);
+extern void monitor_task(intptr_t exinf);
 // 奥山追加 <end>
 #endif /* TOPPERS_MACRO_ONLY */
 

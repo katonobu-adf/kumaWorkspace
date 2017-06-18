@@ -56,6 +56,11 @@ static Balancer        *gBalancer;
 static BalancingWalker *gBalancingWalker;
 static LineTracer      *gLineTracer;
 
+static const float  wheel_r = 8.3;
+static const float  round_len = wheel_r * 3.1415;
+static int    gLeftMeter;
+static int    gRightMeter;
+
 /**
  * EV3システム生成
  */
@@ -68,6 +73,7 @@ static void user_system_create() {
                                            gBalancer);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gLineTracer      = new LineTracer(gLineMonitor, gBalancingWalker);
+
 // 奥山追加 <begin>
     /* Open Bluetooth file */
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
@@ -75,6 +81,8 @@ static void user_system_create() {
 
     /* Bluetooth通信タスクの起動 */
     act_tsk(BT_TASK);
+
+
 // 奥山追加 <end>
 
     // 初期化完了通知
@@ -104,6 +112,7 @@ static void user_system_destroy() {
  */
 void ev3_cyc_tracer(intptr_t exinf) {
     act_tsk(TRACER_TASK);
+    act_tsk(MONITOR_TASK);
 }
 
 /**
@@ -136,8 +145,14 @@ void tracer_task(intptr_t exinf) {
     if (ev3_button_is_pressed(BACK_BUTTON)) {
         wup_tsk(MAIN_TASK);  // バックボタン押下
     } else {
-        tail_control(TAIL_ANGLE_DRIVE); /* バランス走行用角度に制御 */
-        gLineTracer->run();  // 倒立走行
+        // 走行距離の計測
+        if ( ((gLeftMeter+gRightMeter)*round_len/360) / 2 < 100 ){
+            tail_control(TAIL_ANGLE_DRIVE); /* バランス走行用角度に制御 */
+            gLineTracer->run();  // 倒立走行
+        } else {
+            tail_control(TAIL_ANGLE_STAND_UP); /* 直立させるよ */
+            gLineTracer->stop(); // Stop
+        }
     }
 
     ext_tsk();
@@ -218,5 +233,12 @@ void bt_task(intptr_t unused)
         }
         fputc(c, bt); /* エコーバック */
     }
+}
+
+void monitor_task(intptr_t unused)
+{
+    gLeftMeter  = gBalancingWalker->getLeftRound();
+    gRightMeter = gBalancingWalker->getRightRound();
+    ext_tsk();
 }
 // 奥山追加 <end>

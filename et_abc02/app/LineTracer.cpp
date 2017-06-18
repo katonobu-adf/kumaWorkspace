@@ -28,7 +28,7 @@ LineTracer::LineTracer(const LineMonitor* lineMonitor,
                        BalancingWalker* balancingWalker)
     : mLineMonitor(lineMonitor),
       mBalancingWalker(balancingWalker),
-      mIsInitialized(false) {
+      mIsInitialized(false){
 }
 
 /**
@@ -47,10 +47,19 @@ void LineTracer::run() {
     //int direction = calcDirection(isOnLine);
     int direction = calcDirection(brightness);
 
-    mBalancingWalker->setCommand(BalancingWalker::NORMAL, direction);
+    // 走行距離が300cm未満なら走行、以上なら走行停止
+    mBalancingWalker->setCommand(BalancingWalker::LOW, direction);
 
     // 倒立走行を行う
     mBalancingWalker->run();
+}
+
+void LineTracer::stop() {
+    mBalancingWalker->stop();
+}
+
+void LineTracer::smoothStop() {
+    mBalancingWalker->smoothStop();
 }
 
 /**
@@ -71,8 +80,7 @@ int LineTracer::calcDirection(bool isOnLine) {
 
 // 奥山追加 <begin>
 int LineTracer::calcDirection(int brightness){
-    
-    
+
     int turn;
     /* PID 制御用　操作量の算出 */
     /* 観測値を取得 */
@@ -96,4 +104,3 @@ int LineTracer::calcDirection(int brightness){
     return turn;
 }
 // 奥山追加 <end>
-

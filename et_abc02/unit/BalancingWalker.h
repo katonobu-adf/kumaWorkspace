@@ -26,7 +26,11 @@ public:
 
     void init();
     void run();
+    void stop();
+    void smoothStop();
     void setCommand(int forward, int turn);
+    int  getLeftRound();
+    int  getRightRound();
 
 private:
     const ev3api::GyroSensor& mGyroSensor;
@@ -35,6 +39,8 @@ private:
     Balancer* mBalancer;
     int mForward;
     int mTurn;
+    int mLeftRound;
+    int mRightround;
 };
 
 #endif  // EV3_UNIT_BALANCINGWALKER_H_

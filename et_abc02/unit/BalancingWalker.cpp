@@ -73,3 +73,28 @@ void BalancingWalker::setCommand(int forward, int turn) {
     mForward = forward;
     mTurn    = turn;
 }
+
+/**
+ * バランス走行する
+ */
+void BalancingWalker::stop() {
+    // 左右モータに回転を指示する
+    mLeftWheel.setPWM(0);
+    mRightWheel.setPWM(0);
+}
+
+void BalancingWalker::smoothStop() {
+    mLeftWheel.setBrake(false);
+    mRightWheel.setBrake(false);
+    // 左右モータに回転を指示する
+    mLeftWheel.setPWM(0);
+    mRightWheel.setPWM(0);
+}
+
+int BalancingWalker::getLeftRound(){
+    return mLeftWheel.getCount();
+}
+
+int BalancingWalker::getRightRound(){
+    return mRightWheel.getCount();
+}
