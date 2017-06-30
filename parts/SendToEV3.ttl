@@ -1,0 +1,25 @@
+; COMポートの指定
+port = '40'
+; 送信ファイルの指定
+filepath = 'C:\cygwin64\ev3rt\hrp2\sdk\workspace\app'
+
+; 以下、マクロ本体
+command = '/C='
+strconcat command port
+connect command
+; pause 3
+if result == 2 then
+  goto sendfile
+else
+  messagebox 'COMポートに接続できませんでした' '接続エラー'
+  goto end
+endif
+
+:sendfile
+messagebox 'EV3を[Bluetooth SPP]にセットしてください' '接続OK'
+zmodemsend filepath 1
+; pause 2
+
+:end
+
+end
