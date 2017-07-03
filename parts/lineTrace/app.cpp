@@ -9,33 +9,33 @@
 #include "app.h"
 #include "LineTracer.h"
 
-// ‰œR’Ç‰Á <begin>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <begin>
 #include "TouchSensor.h"
-// ‰œR’Ç‰Á <end>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <end>
 
-// ƒfƒXƒgƒ‰ƒNƒ^–â‘è‚Ì‰ñ”ğ
+// Æ’fÆ’XÆ’gÆ’â€°Æ’NÆ’^â€“Ã¢â€˜Ã¨â€šÃŒâ€°Ã±â€Ã°
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
 void *__dso_handle=0;
 
-// usingéŒ¾
+// usingÂÃ©Å’Â¾
 using ev3api::ColorSensor;
 using ev3api::GyroSensor;
 using ev3api::Motor;
 
-// ‰œR’Ç‰Á <begin>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <begin>
 using ev3api::TouchSensor;
 
-#define TAIL_ANGLE_STAND_UP  92 /* Š®‘S’â~‚ÌŠp“x[“x] */
-#define TAIL_ANGLE_DRIVE      3 /* ƒoƒ‰ƒ“ƒX‘–s‚ÌŠp“x[“x] */
-#define P_GAIN             2.5F /* Š®‘S’â~—pƒ‚[ƒ^§Œä”ä—áŒW” */
-#define PWM_ABS_MAX          60 /* Š®‘S’â~—pƒ‚[ƒ^§ŒäPWMâ‘ÎÅ‘å’l */
+#define TAIL_ANGLE_STAND_UP  92 /* Å Â®â€˜Sâ€™Ã¢Å½~Å½Å¾â€šÃŒÅ pâ€œx[â€œx] */
+#define TAIL_ANGLE_DRIVE      3 /* Æ’oÆ’â€°Æ’â€œÆ’Xâ€˜â€“ÂsÅ½Å¾â€šÃŒÅ pâ€œx[â€œx] */
+#define P_GAIN             2.5F /* Å Â®â€˜Sâ€™Ã¢Å½~â€”pÆ’â€šÂ[Æ’^ÂÂ§Å’Ã¤â€Ã¤â€”Ã¡Å’WÂâ€ */
+#define PWM_ABS_MAX          60 /* Å Â®â€˜Sâ€™Ã¢Å½~â€”pÆ’â€šÂ[Æ’^ÂÂ§Å’Ã¤PWMÂÃ¢â€˜ÃÂÃ…â€˜Ã¥â€™l */
 
-static int      bt_cmd = 0;     /* BluetoothƒRƒ}ƒ“ƒh 1:ƒŠƒ‚[ƒgƒXƒ^[ƒg */
-static FILE     *bt = NULL;     /* Bluetoothƒtƒ@ƒCƒ‹ƒnƒ“ƒhƒ‹ */
+static int      bt_cmd = 0;     /* BluetoothÆ’RÆ’}Æ’â€œÆ’h 1:Æ’Å Æ’â€šÂ[Æ’gÆ’XÆ’^Â[Æ’g */
+static FILE     *bt = NULL;     /* BluetoothÆ’tÆ’@Æ’CÆ’â€¹Æ’nÆ’â€œÆ’hÆ’â€¹ */
 
-// ‰œR’Ç‰Á <end>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <end>
 
-// ²X–Ø’Ç‰Á <begin>
+// ÂÂ²ÂXâ€“Ã˜â€™Ã‡â€°Ã <begin>
 #define RUN_PER_SEC 250
 #define RUN_TIME    RUN_PER_SEC * 4
 int run_various = 0;
@@ -44,36 +44,36 @@ int bright_val = 0;
 int ambient_val = 0;
 char light_msg[32];
 
-// ²X–Ø’Ç‰Á <end>
+// ÂÂ²ÂXâ€“Ã˜â€™Ã‡â€°Ã <end>
 
 
 
 // Device objects
-// ƒIƒuƒWƒFƒNƒg‚ğÃ“I‚ÉŠm•Û‚·‚é
+// Æ’IÆ’uÆ’WÆ’FÆ’NÆ’gâ€šÃ°ÂÃƒâ€œIâ€šÃ‰Å mâ€¢Ã›â€šÂ·â€šÃ©
 ColorSensor gColorSensor(PORT_3);
 GyroSensor  gGyroSensor(PORT_4);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
 
-// ‰œR’Ç‰Á <begin>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <begin>
 TouchSensor gTouchSensor(PORT_1);
 Motor       gTail(PORT_A);
 
 static void readyToStart(void);
 static void tail_control(signed int angle);
-// ‰œR’Ç‰Á <end>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <end>
 
-// ƒIƒuƒWƒFƒNƒg‚Ì’è‹`
+// Æ’IÆ’uÆ’WÆ’FÆ’NÆ’gâ€šÃŒâ€™Ã¨â€¹`
 static LineMonitor     *gLineMonitor;
 static Balancer        *gBalancer;
 static BalancingWalker *gBalancingWalker;
 static LineTracer      *gLineTracer;
 
 /**
- * EV3ƒVƒXƒeƒ€¶¬
+ * EV3Æ’VÆ’XÆ’eÆ’â‚¬ÂÂ¶ÂÂ¬
  */
 static void user_system_create() {
-    // ƒIƒuƒWƒFƒNƒg‚Ìì¬
+    // Æ’IÆ’uÆ’WÆ’FÆ’NÆ’gâ€šÃŒÂÃ¬ÂÂ¬
     gBalancer        = new Balancer();
     gBalancingWalker = new BalancingWalker(gGyroSensor,
                                            gLeftWheel,
@@ -81,24 +81,24 @@ static void user_system_create() {
                                            gBalancer);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gLineTracer      = new LineTracer(gLineMonitor, gBalancingWalker);
-// ‰œR’Ç‰Á <begin>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <begin>
     /* Open Bluetooth file */
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     assert(bt != NULL);
 
-    /* Bluetooth’ÊMƒ^ƒXƒN‚Ì‹N“® */
+    /* Bluetoothâ€™ÃŠÂMÆ’^Æ’XÆ’Nâ€šÃŒâ€¹Nâ€œÂ® */
     act_tsk(BT_TASK);
-// ‰œR’Ç‰Á <end>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <end>
 
-// ²X–Ø’Ç‰Á <begin>
-    gTail.setBrake(true); // ƒuƒŒ[ƒLƒ‚[ƒhİ’è
+// ÂÂ²ÂXâ€“Ã˜â€™Ã‡â€°Ã <begin>
+    gTail.setBrake(true); // Æ’uÆ’Å’Â[Æ’LÆ’â€šÂ[Æ’hÂÃâ€™Ã¨
     gTail.reset();
-// ²X–Ø’Ç‰Á <end>
+// ÂÂ²ÂXâ€“Ã˜â€™Ã‡â€°Ã <end>
 
 }
 
 /**
- * EV3ƒVƒXƒeƒ€”jŠü
+ * EV3Æ’VÆ’XÆ’eÆ’â‚¬â€jÅ Ã¼
  */
 static void user_system_destroy() {
     gLeftWheel.reset();
@@ -109,65 +109,65 @@ static void user_system_destroy() {
     delete gBalancingWalker;
     delete gBalancer;
 
-// ‰œR’Ç‰Á <begin>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <begin>
     ter_tsk(BT_TASK);
     fclose(bt);
-// ‰œR’Ç‰Á <end>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <end>
 }
 
 /**
- * ƒƒCƒ“ƒ^ƒXƒN
+ * Æ’ÂÆ’CÆ’â€œÆ’^Æ’XÆ’N
  */
 void main_task(intptr_t unused) {
-    user_system_create();  // ƒZƒ“ƒT‚âƒ‚[ƒ^‚Ì‰Šú‰»ˆ—
+    user_system_create();  // Æ’ZÆ’â€œÆ’Tâ€šÃ¢Æ’â€šÂ[Æ’^â€šÃŒÂâ€°Å Ãºâ€°Â»ÂË†â€”Â
 
-    // ²X–Ø’Ç‰Á <begin>
+    // ÂÂ²ÂXâ€“Ã˜â€™Ã‡â€°Ã <begin>
     while(true){
         readyToStart();
         if(ev3_button_is_pressed(BACK_BUTTON)){
-            break; // ŒJ‚è•Ô‚µI—¹
+            break; // Å’Jâ€šÃ¨â€¢Ã”â€šÂµÂIâ€”Â¹
         }
         
         ev3_led_set_color(LED_GREEN);
-        // üŠúƒnƒ“ƒhƒ‰ŠJn
+        // Å½Ã¼Å ÃºÆ’nÆ’â€œÆ’hÆ’â€°Å JÅ½n
         switch(run_various){
             case 1:
                 ev3_sta_cyc(EV3_CYC_AMBIENT);
-                slp_tsk();  // u‚Ov‚ª“ü—Í‚³‚ê‚é‚©Aˆê’èŠÔŒo‰ß‚µ‚½‚ç‰ğœ
-                ev3_stp_cyc(EV3_CYC_AMBIENT); // üŠúƒnƒ“ƒhƒ‰’â~
+                slp_tsk();  // Âuâ€šOÂvâ€šÂªâ€œÃ¼â€”Ãâ€šÂ³â€šÃªâ€šÃ©â€šÂ©ÂAË†Ãªâ€™Ã¨Å½Å¾Å Ã”Å’oâ€°ÃŸâ€šÂµâ€šÂ½â€šÃ§â€°Ã°ÂÅ“
+                ev3_stp_cyc(EV3_CYC_AMBIENT); // Å½Ã¼Å ÃºÆ’nÆ’â€œÆ’hÆ’â€°â€™Ã¢Å½~
                 break;
             case 2:
                 ev3_sta_cyc(EV3_CYC_BRIGHT);
-                slp_tsk();  // u‚Ov‚ª“ü—Í‚³‚ê‚é‚©Aˆê’èŠÔŒo‰ß‚µ‚½‚ç‰ğœ
-                ev3_stp_cyc(EV3_CYC_BRIGHT); // üŠúƒnƒ“ƒhƒ‰’â~
+                slp_tsk();  // Âuâ€šOÂvâ€šÂªâ€œÃ¼â€”Ãâ€šÂ³â€šÃªâ€šÃ©â€šÂ©ÂAË†Ãªâ€™Ã¨Å½Å¾Å Ã”Å’oâ€°ÃŸâ€šÂµâ€šÂ½â€šÃ§â€°Ã°ÂÅ“
+                ev3_stp_cyc(EV3_CYC_BRIGHT); // Å½Ã¼Å ÃºÆ’nÆ’â€œÆ’hÆ’â€°â€™Ã¢Å½~
                 break;
             default:
                 break;
         }
     }
-    user_system_destroy();  // I—¹ˆ—
+    user_system_destroy();  // ÂIâ€”Â¹ÂË†â€”Â
     ext_tsk();
 }
 
 /**
- * Œv‘ªÀsƒ^ƒCƒ~ƒ“ƒO
+ * Å’vâ€˜ÂªÅ½Ã€ÂsÆ’^Æ’CÆ’~Æ’â€œÆ’O
  */
 void ev3_cyc_ambient(intptr_t exinf) {
     act_tsk(MEASURE_AMBIENT_TASK);
 }
 
 /**
- * ŠÂ‹«ŒõŒv‘ªƒ^ƒXƒN
+ * Å Ã‚â€¹Â«Å’ÃµÅ’vâ€˜ÂªÆ’^Æ’XÆ’N
  */
 void measure_ambient_task(intptr_t exinf) {
-    tail_control(TAIL_ANGLE_STAND_UP); // Ã~ó‘Ô‚Ì‚Ü‚ÜŒv‘ª
+    tail_control(TAIL_ANGLE_STAND_UP); // ÂÃƒÅ½~ÂÃ³â€˜Ã”â€šÃŒâ€šÃœâ€šÃœÅ’vâ€˜Âª
 
     if (bt_cmd == 0 || run_cnt >= RUN_TIME) {
         run_cnt = 0;
-        wup_tsk(MAIN_TASK);  // ƒƒCƒ“ƒ^ƒXƒNÄŠJiŒv‘ªƒ^ƒXƒN‚ÌI—¹j
+        wup_tsk(MAIN_TASK);  // Æ’ÂÆ’CÆ’â€œÆ’^Æ’XÆ’NÂÃ„Å JÂiÅ’vâ€˜ÂªÆ’^Æ’XÆ’Nâ€šÃŒÂIâ€”Â¹Âj
 
     } else {
-        ambient_val = gLineMonitor->getAmbient(); // ŠÂ‹«Œõ‚ğŒv‘ª
+        ambient_val = gLineMonitor->getAmbient(); // Å Ã‚â€¹Â«Å’Ãµâ€šÃ°Å’vâ€˜Âª
         sprintf(light_msg, "%d, ", ambient_val);
         fputs(light_msg, bt);
         ++run_cnt;
@@ -180,14 +180,14 @@ void ev3_cyc_bright(intptr_t exinf) {
 }
 
 void measure_bright_task(intptr_t exinf) {
-    tail_control(TAIL_ANGLE_STAND_UP); // Ã~ó‘Ô‚Ì‚Ü‚ÜŒv‘ª
+    tail_control(TAIL_ANGLE_STAND_UP); // ÂÃƒÅ½~ÂÃ³â€˜Ã”â€šÃŒâ€šÃœâ€šÃœÅ’vâ€˜Âª
 
     if (bt_cmd == 0 || run_cnt >= RUN_TIME) {
         run_cnt = 0;
-        wup_tsk(MAIN_TASK);  // ƒƒCƒ“ƒ^ƒXƒNÄŠJiŒv‘ªƒ^ƒXƒN‚ÌI—¹j
+        wup_tsk(MAIN_TASK);  // Æ’ÂÆ’CÆ’â€œÆ’^Æ’XÆ’NÂÃ„Å JÂiÅ’vâ€˜ÂªÆ’^Æ’XÆ’Nâ€šÃŒÂIâ€”Â¹Âj
 
     } else {
-        bright_val = gLineMonitor->getBrightness(); // ”½ËŒõ‚ğŒv‘ª
+        bright_val = gLineMonitor->getBrightness(); // â€Â½Å½Ã‹Å’Ãµâ€šÃ°Å’vâ€˜Âª
         sprintf(light_msg, "%d, ", bright_val);
         fputs(light_msg, bt);
         ++run_cnt;
@@ -195,15 +195,15 @@ void measure_bright_task(intptr_t exinf) {
     ext_tsk();
 }
 
-// ‰œR’Ç‰Á <begin>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <begin>
 static void  readyToStart(void){
     ev3_led_set_color(LED_ORANGE);
     bt_cmd = 0;
     
-    /* ƒXƒ^[ƒg‘Ò‹@ */
+    /* Æ’XÆ’^Â[Æ’gâ€˜Ã’â€¹@ */
     while(1)
     {
-        tail_control(TAIL_ANGLE_STAND_UP); /* Š®‘S’â~—pŠp“x‚É§Œä */
+        tail_control(TAIL_ANGLE_STAND_UP); /* Å Â®â€˜Sâ€™Ã¢Å½~â€”pÅ pâ€œxâ€šÃ‰ÂÂ§Å’Ã¤ */
         switch(bt_cmd){
             case 1:
                 run_various = 1;
@@ -215,23 +215,23 @@ static void  readyToStart(void){
                 break; 
         }
         if (bt_cmd != 0 || ev3_button_is_pressed(BACK_BUTTON)){
-            break; /* ƒŠƒ‚[ƒgƒXƒ^[ƒg */
+            break; /* Æ’Å Æ’â€šÂ[Æ’gÆ’XÆ’^Â[Æ’g */
         }
 
-        tslp_tsk(10);         /* 10msecƒEƒFƒCƒg */
+        tslp_tsk(10);         /* 10msecÆ’EÆ’FÆ’CÆ’g */
     }
 }
 
 //*****************************************************************************
-// ŠÖ”–¼ : tail_control
-// ˆø” : angle (ƒ‚[ƒ^–Ú•WŠp“x[“x])
-// •Ô‚è’l : –³‚µ
-// ŠT—v : ‘–s‘ÌŠ®‘S’â~—pƒ‚[ƒ^‚ÌŠp“x§Œä
+// Å Ã–Ââ€â€“Â¼ : tail_control
+// Ë†Ã¸Ââ€ : angle (Æ’â€šÂ[Æ’^â€“Ãšâ€¢WÅ pâ€œx[â€œx])
+// â€¢Ã”â€šÃ¨â€™l : â€“Â³â€šÂµ
+// Å Tâ€”v : â€˜â€“Âsâ€˜ÃŒÅ Â®â€˜Sâ€™Ã¢Å½~â€”pÆ’â€šÂ[Æ’^â€šÃŒÅ pâ€œxÂÂ§Å’Ã¤
 //*****************************************************************************
 static void tail_control(signed int angle)
 {
-    float pwm = (float)(angle - gTail.getCount() )*P_GAIN; /* ”ä—á§Œä */
-    /* PWMo—Í–O˜aˆ— */
+    float pwm = (float)(angle - gTail.getCount() )*P_GAIN; /* â€Ã¤â€”Ã¡ÂÂ§Å’Ã¤ */
+    /* PWMÂoâ€”Ãâ€“OËœaÂË†â€”Â */
     if (pwm > PWM_ABS_MAX)
     {
         pwm = PWM_ABS_MAX;
@@ -251,17 +251,17 @@ static void tail_control(signed int angle)
     }
 }
 //*****************************************************************************
-// ŠÖ”–¼ : bt_task
-// ˆø” : unused
-// •Ô‚è’l : ‚È‚µ
-// ŠT—v : Bluetooth’ÊM‚É‚æ‚éƒŠƒ‚[ƒgƒXƒ^[ƒgB Tera Term‚È‚Ç‚Ìƒ^[ƒ~ƒiƒ‹ƒ\ƒtƒg‚©‚çA
-//       ASCIIƒR[ƒh‚Å1‚ğ‘—M‚·‚é‚ÆAƒŠƒ‚[ƒgƒXƒ^[ƒg‚·‚éB
+// Å Ã–Ââ€â€“Â¼ : bt_task
+// Ë†Ã¸Ââ€ : unused
+// â€¢Ã”â€šÃ¨â€™l : â€šÃˆâ€šÂµ
+// Å Tâ€”v : Bluetoothâ€™ÃŠÂMâ€šÃ‰â€šÃ¦â€šÃ©Æ’Å Æ’â€šÂ[Æ’gÆ’XÆ’^Â[Æ’gÂB Tera Termâ€šÃˆâ€šÃ‡â€šÃŒÆ’^Â[Æ’~Æ’iÆ’â€¹Æ’\Æ’tÆ’gâ€šÂ©â€šÃ§ÂA
+//       ASCIIÆ’RÂ[Æ’hâ€šÃ…1â€šÃ°â€˜â€”ÂMâ€šÂ·â€šÃ©â€šÃ†ÂAÆ’Å Æ’â€šÂ[Æ’gÆ’XÆ’^Â[Æ’gâ€šÂ·â€šÃ©ÂB
 //*****************************************************************************
 void bt_task(intptr_t unused)
 {
     while(1)
     {
-        uint8_t c = fgetc(bt); /* óM */
+        uint8_t c = fgetc(bt); /* Å½Ã³ÂM */
         switch(c)
         {
         case '0':
@@ -276,7 +276,7 @@ void bt_task(intptr_t unused)
         default:
             break;
         }
-        fputc(c, bt); /* ƒGƒR[ƒoƒbƒN */
+        fputc(c, bt); /* Æ’GÆ’RÂ[Æ’oÆ’bÆ’N */
     }
 }
-// ‰œR’Ç‰Á <end>
+// â€°Å“Å½Râ€™Ã‡â€°Ã <end>
