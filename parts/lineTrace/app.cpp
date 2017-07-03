@@ -9,33 +9,33 @@
 #include "app.h"
 #include "LineTracer.h"
 
-// ‰œR’Ç‰Á <begin>
+// å¥¥å±±è¿½åŠ  <begin>
 #include "TouchSensor.h"
-// ‰œR’Ç‰Á <end>
+// å¥¥å±±è¿½åŠ  <end>
 
-// ƒfƒXƒgƒ‰ƒNƒ^–â‘è‚Ì‰ñ”ğ
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å•é¡Œã®å›é¿
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
 void *__dso_handle=0;
 
-// usingéŒ¾
+// usingå®£è¨€
 using ev3api::ColorSensor;
 using ev3api::GyroSensor;
 using ev3api::Motor;
 
-// ‰œR’Ç‰Á <begin>
+// å¥¥å±±è¿½åŠ  <begin>
 using ev3api::TouchSensor;
 
-#define TAIL_ANGLE_STAND_UP  92 /* Š®‘S’â~‚ÌŠp“x[“x] */
-#define TAIL_ANGLE_DRIVE      3 /* ƒoƒ‰ƒ“ƒX‘–s‚ÌŠp“x[“x] */
-#define P_GAIN             2.5F /* Š®‘S’â~—pƒ‚[ƒ^§Œä”ä—áŒW” */
-#define PWM_ABS_MAX          60 /* Š®‘S’â~—pƒ‚[ƒ^§ŒäPWMâ‘ÎÅ‘å’l */
+#define TAIL_ANGLE_STAND_UP  92 /* å®Œå…¨åœæ­¢æ™‚ã®è§’åº¦[åº¦] */
+#define TAIL_ANGLE_DRIVE      3 /* ãƒãƒ©ãƒ³ã‚¹èµ°è¡Œæ™‚ã®è§’åº¦[åº¦] */
+#define P_GAIN             2.5F /* å®Œå…¨åœæ­¢ç”¨ãƒ¢ãƒ¼ã‚¿åˆ¶å¾¡æ¯”ä¾‹ä¿‚æ•° */
+#define PWM_ABS_MAX          60 /* å®Œå…¨åœæ­¢ç”¨ãƒ¢ãƒ¼ã‚¿åˆ¶å¾¡PWMçµ¶å¯¾æœ€å¤§å€¤ */
 
-static int      bt_cmd = 0;     /* BluetoothƒRƒ}ƒ“ƒh 1:ƒŠƒ‚[ƒgƒXƒ^[ƒg */
-static FILE     *bt = NULL;     /* Bluetoothƒtƒ@ƒCƒ‹ƒnƒ“ƒhƒ‹ */
+static int      bt_cmd = 0;     /* Bluetoothã‚³ãƒãƒ³ãƒ‰ 1:ãƒªãƒ¢ãƒ¼ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆ */
+static FILE     *bt = NULL;     /* Bluetoothãƒ•ã‚¡ã‚¤ãƒ«ãƒãƒ³ãƒ‰ãƒ« */
 
-// ‰œR’Ç‰Á <end>
+// å¥¥å±±è¿½åŠ  <end>
 
-// ²X–Ø’Ç‰Á <begin>
+// ä½ã€…æœ¨è¿½åŠ  <begin>
 #define RUN_PER_SEC 250
 #define RUN_TIME    RUN_PER_SEC * 4
 int run_various = 0;
@@ -44,36 +44,36 @@ int bright_val = 0;
 int ambient_val = 0;
 char light_msg[32];
 
-// ²X–Ø’Ç‰Á <end>
+// ä½ã€…æœ¨è¿½åŠ  <end>
 
 
 
 // Device objects
-// ƒIƒuƒWƒFƒNƒg‚ğÃ“I‚ÉŠm•Û‚·‚é
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é™çš„ã«ç¢ºä¿ã™ã‚‹
 ColorSensor gColorSensor(PORT_3);
 GyroSensor  gGyroSensor(PORT_4);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
 
-// ‰œR’Ç‰Á <begin>
+// å¥¥å±±è¿½åŠ  <begin>
 TouchSensor gTouchSensor(PORT_1);
 Motor       gTail(PORT_A);
 
 static void readyToStart(void);
 static void tail_control(signed int angle);
-// ‰œR’Ç‰Á <end>
+// å¥¥å±±è¿½åŠ  <end>
 
-// ƒIƒuƒWƒFƒNƒg‚Ì’è‹`
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å®šç¾©
 static LineMonitor     *gLineMonitor;
 static Balancer        *gBalancer;
 static BalancingWalker *gBalancingWalker;
 static LineTracer      *gLineTracer;
 
 /**
- * EV3ƒVƒXƒeƒ€¶¬
+ * EV3ã‚·ã‚¹ãƒ†ãƒ ç”Ÿæˆ
  */
 static void user_system_create() {
-    // ƒIƒuƒWƒFƒNƒg‚Ìì¬
+    // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
     gBalancer        = new Balancer();
     gBalancingWalker = new BalancingWalker(gGyroSensor,
                                            gLeftWheel,
@@ -81,24 +81,24 @@ static void user_system_create() {
                                            gBalancer);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gLineTracer      = new LineTracer(gLineMonitor, gBalancingWalker);
-// ‰œR’Ç‰Á <begin>
+// å¥¥å±±è¿½åŠ  <begin>
     /* Open Bluetooth file */
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     assert(bt != NULL);
 
-    /* Bluetooth’ÊMƒ^ƒXƒN‚Ì‹N“® */
+    /* Bluetoothé€šä¿¡ã‚¿ã‚¹ã‚¯ã®èµ·å‹• */
     act_tsk(BT_TASK);
-// ‰œR’Ç‰Á <end>
+// å¥¥å±±è¿½åŠ  <end>
 
-// ²X–Ø’Ç‰Á <begin>
-    gTail.setBrake(true); // ƒuƒŒ[ƒLƒ‚[ƒhİ’è
+// ä½ã€…æœ¨è¿½åŠ  <begin>
+    gTail.setBrake(true); // ãƒ–ãƒ¬ãƒ¼ã‚­ãƒ¢ãƒ¼ãƒ‰è¨­å®š
     gTail.reset();
-// ²X–Ø’Ç‰Á <end>
+// ä½ã€…æœ¨è¿½åŠ  <end>
 
 }
 
 /**
- * EV3ƒVƒXƒeƒ€”jŠü
+ * EV3ã‚·ã‚¹ãƒ†ãƒ ç ´æ£„
  */
 static void user_system_destroy() {
     gLeftWheel.reset();
@@ -109,65 +109,65 @@ static void user_system_destroy() {
     delete gBalancingWalker;
     delete gBalancer;
 
-// ‰œR’Ç‰Á <begin>
+// å¥¥å±±è¿½åŠ  <begin>
     ter_tsk(BT_TASK);
     fclose(bt);
-// ‰œR’Ç‰Á <end>
+// å¥¥å±±è¿½åŠ  <end>
 }
 
 /**
- * ƒƒCƒ“ƒ^ƒXƒN
+ * ãƒ¡ã‚¤ãƒ³ã‚¿ã‚¹ã‚¯
  */
 void main_task(intptr_t unused) {
-    user_system_create();  // ƒZƒ“ƒT‚âƒ‚[ƒ^‚Ì‰Šú‰»ˆ—
+    user_system_create();  // ã‚»ãƒ³ã‚µã‚„ãƒ¢ãƒ¼ã‚¿ã®åˆæœŸåŒ–å‡¦ç†
 
-    // ²X–Ø’Ç‰Á <begin>
+    // ä½ã€…æœ¨è¿½åŠ  <begin>
     while(true){
         readyToStart();
         if(ev3_button_is_pressed(BACK_BUTTON)){
-            break; // ŒJ‚è•Ô‚µI—¹
+            break; // ç¹°ã‚Šè¿”ã—çµ‚äº†
         }
         
         ev3_led_set_color(LED_GREEN);
-        // üŠúƒnƒ“ƒhƒ‰ŠJn
+        // å‘¨æœŸãƒãƒ³ãƒ‰ãƒ©é–‹å§‹
         switch(run_various){
             case 1:
                 ev3_sta_cyc(EV3_CYC_AMBIENT);
-                slp_tsk();  // u‚Ov‚ª“ü—Í‚³‚ê‚é‚©Aˆê’èŠÔŒo‰ß‚µ‚½‚ç‰ğœ
-                ev3_stp_cyc(EV3_CYC_AMBIENT); // üŠúƒnƒ“ƒhƒ‰’â~
+                slp_tsk();  // ã€Œï¼ã€ãŒå…¥åŠ›ã•ã‚Œã‚‹ã‹ã€ä¸€å®šæ™‚é–“çµŒéã—ãŸã‚‰è§£é™¤
+                ev3_stp_cyc(EV3_CYC_AMBIENT); // å‘¨æœŸãƒãƒ³ãƒ‰ãƒ©åœæ­¢
                 break;
             case 2:
                 ev3_sta_cyc(EV3_CYC_BRIGHT);
-                slp_tsk();  // u‚Ov‚ª“ü—Í‚³‚ê‚é‚©Aˆê’èŠÔŒo‰ß‚µ‚½‚ç‰ğœ
-                ev3_stp_cyc(EV3_CYC_BRIGHT); // üŠúƒnƒ“ƒhƒ‰’â~
+                slp_tsk();  // ã€Œï¼ã€ãŒå…¥åŠ›ã•ã‚Œã‚‹ã‹ã€ä¸€å®šæ™‚é–“çµŒéã—ãŸã‚‰è§£é™¤
+                ev3_stp_cyc(EV3_CYC_BRIGHT); // å‘¨æœŸãƒãƒ³ãƒ‰ãƒ©åœæ­¢
                 break;
             default:
                 break;
         }
     }
-    user_system_destroy();  // I—¹ˆ—
+    user_system_destroy();  // çµ‚äº†å‡¦ç†
     ext_tsk();
 }
 
 /**
- * Œv‘ªÀsƒ^ƒCƒ~ƒ“ƒO
+ * è¨ˆæ¸¬å®Ÿè¡Œã‚¿ã‚¤ãƒŸãƒ³ã‚°
  */
 void ev3_cyc_ambient(intptr_t exinf) {
     act_tsk(MEASURE_AMBIENT_TASK);
 }
 
 /**
- * ŠÂ‹«ŒõŒv‘ªƒ^ƒXƒN
+ * ç’°å¢ƒå…‰è¨ˆæ¸¬ã‚¿ã‚¹ã‚¯
  */
 void measure_ambient_task(intptr_t exinf) {
-    tail_control(TAIL_ANGLE_STAND_UP); // Ã~ó‘Ô‚Ì‚Ü‚ÜŒv‘ª
+    tail_control(TAIL_ANGLE_STAND_UP); // é™æ­¢çŠ¶æ…‹ã®ã¾ã¾è¨ˆæ¸¬
 
     if (bt_cmd == 0 || run_cnt >= RUN_TIME) {
         run_cnt = 0;
-        wup_tsk(MAIN_TASK);  // ƒƒCƒ“ƒ^ƒXƒNÄŠJiŒv‘ªƒ^ƒXƒN‚ÌI—¹j
+        wup_tsk(MAIN_TASK);  // ãƒ¡ã‚¤ãƒ³ã‚¿ã‚¹ã‚¯å†é–‹ï¼ˆè¨ˆæ¸¬ã‚¿ã‚¹ã‚¯ã®çµ‚äº†ï¼‰
 
     } else {
-        ambient_val = gLineMonitor->getAmbient(); // ŠÂ‹«Œõ‚ğŒv‘ª
+        ambient_val = gLineMonitor->getAmbient(); // ç’°å¢ƒå…‰ã‚’è¨ˆæ¸¬
         sprintf(light_msg, "%d, ", ambient_val);
         fputs(light_msg, bt);
         ++run_cnt;
@@ -180,14 +180,14 @@ void ev3_cyc_bright(intptr_t exinf) {
 }
 
 void measure_bright_task(intptr_t exinf) {
-    tail_control(TAIL_ANGLE_STAND_UP); // Ã~ó‘Ô‚Ì‚Ü‚ÜŒv‘ª
+    tail_control(TAIL_ANGLE_STAND_UP); // é™æ­¢çŠ¶æ…‹ã®ã¾ã¾è¨ˆæ¸¬
 
     if (bt_cmd == 0 || run_cnt >= RUN_TIME) {
         run_cnt = 0;
-        wup_tsk(MAIN_TASK);  // ƒƒCƒ“ƒ^ƒXƒNÄŠJiŒv‘ªƒ^ƒXƒN‚ÌI—¹j
+        wup_tsk(MAIN_TASK);  // ãƒ¡ã‚¤ãƒ³ã‚¿ã‚¹ã‚¯å†é–‹ï¼ˆè¨ˆæ¸¬ã‚¿ã‚¹ã‚¯ã®çµ‚äº†ï¼‰
 
     } else {
-        bright_val = gLineMonitor->getBrightness(); // ”½ËŒõ‚ğŒv‘ª
+        bright_val = gLineMonitor->getBrightness(); // åå°„å…‰ã‚’è¨ˆæ¸¬
         sprintf(light_msg, "%d, ", bright_val);
         fputs(light_msg, bt);
         ++run_cnt;
@@ -195,15 +195,15 @@ void measure_bright_task(intptr_t exinf) {
     ext_tsk();
 }
 
-// ‰œR’Ç‰Á <begin>
+// å¥¥å±±è¿½åŠ  <begin>
 static void  readyToStart(void){
     ev3_led_set_color(LED_ORANGE);
     bt_cmd = 0;
     
-    /* ƒXƒ^[ƒg‘Ò‹@ */
+    /* ã‚¹ã‚¿ãƒ¼ãƒˆå¾…æ©Ÿ */
     while(1)
     {
-        tail_control(TAIL_ANGLE_STAND_UP); /* Š®‘S’â~—pŠp“x‚É§Œä */
+        tail_control(TAIL_ANGLE_STAND_UP); /* å®Œå…¨åœæ­¢ç”¨è§’åº¦ã«åˆ¶å¾¡ */
         switch(bt_cmd){
             case 1:
                 run_various = 1;
@@ -215,23 +215,23 @@ static void  readyToStart(void){
                 break; 
         }
         if (bt_cmd != 0 || ev3_button_is_pressed(BACK_BUTTON)){
-            break; /* ƒŠƒ‚[ƒgƒXƒ^[ƒg */
+            break; /* ãƒªãƒ¢ãƒ¼ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆ */
         }
 
-        tslp_tsk(10);         /* 10msecƒEƒFƒCƒg */
+        tslp_tsk(10);         /* 10msecã‚¦ã‚§ã‚¤ãƒˆ */
     }
 }
 
 //*****************************************************************************
-// ŠÖ”–¼ : tail_control
-// ˆø” : angle (ƒ‚[ƒ^–Ú•WŠp“x[“x])
-// •Ô‚è’l : –³‚µ
-// ŠT—v : ‘–s‘ÌŠ®‘S’â~—pƒ‚[ƒ^‚ÌŠp“x§Œä
+// é–¢æ•°å : tail_control
+// å¼•æ•° : angle (ãƒ¢ãƒ¼ã‚¿ç›®æ¨™è§’åº¦[åº¦])
+// è¿”ã‚Šå€¤ : ç„¡ã—
+// æ¦‚è¦ : èµ°è¡Œä½“å®Œå…¨åœæ­¢ç”¨ãƒ¢ãƒ¼ã‚¿ã®è§’åº¦åˆ¶å¾¡
 //*****************************************************************************
 static void tail_control(signed int angle)
 {
-    float pwm = (float)(angle - gTail.getCount() )*P_GAIN; /* ”ä—á§Œä */
-    /* PWMo—Í–O˜aˆ— */
+    float pwm = (float)(angle - gTail.getCount() )*P_GAIN; /* æ¯”ä¾‹åˆ¶å¾¡ */
+    /* PWMå‡ºåŠ›é£½å’Œå‡¦ç† */
     if (pwm > PWM_ABS_MAX)
     {
         pwm = PWM_ABS_MAX;
@@ -251,17 +251,17 @@ static void tail_control(signed int angle)
     }
 }
 //*****************************************************************************
-// ŠÖ”–¼ : bt_task
-// ˆø” : unused
-// •Ô‚è’l : ‚È‚µ
-// ŠT—v : Bluetooth’ÊM‚É‚æ‚éƒŠƒ‚[ƒgƒXƒ^[ƒgB Tera Term‚È‚Ç‚Ìƒ^[ƒ~ƒiƒ‹ƒ\ƒtƒg‚©‚çA
-//       ASCIIƒR[ƒh‚Å1‚ğ‘—M‚·‚é‚ÆAƒŠƒ‚[ƒgƒXƒ^[ƒg‚·‚éB
+// é–¢æ•°å : bt_task
+// å¼•æ•° : unused
+// è¿”ã‚Šå€¤ : ãªã—
+// æ¦‚è¦ : Bluetoothé€šä¿¡ã«ã‚ˆã‚‹ãƒªãƒ¢ãƒ¼ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆã€‚ Tera Termãªã©ã®ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ã‚½ãƒ•ãƒˆã‹ã‚‰ã€
+//       ASCIIã‚³ãƒ¼ãƒ‰ã§1ã‚’é€ä¿¡ã™ã‚‹ã¨ã€ãƒªãƒ¢ãƒ¼ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆã™ã‚‹ã€‚
 //*****************************************************************************
 void bt_task(intptr_t unused)
 {
     while(1)
     {
-        uint8_t c = fgetc(bt); /* óM */
+        uint8_t c = fgetc(bt); /* å—ä¿¡ */
         switch(c)
         {
         case '0':
@@ -276,7 +276,7 @@ void bt_task(intptr_t unused)
         default:
             break;
         }
-        fputc(c, bt); /* ƒGƒR[ƒoƒbƒN */
+        fputc(c, bt); /* ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯ */
     }
 }
-// ‰œR’Ç‰Á <end>
+// å¥¥å±±è¿½åŠ  <end>
