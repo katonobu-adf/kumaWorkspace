@@ -28,11 +28,6 @@ void run_task(intptr_t unused) {
 	// 回転角度をリセット
 	ev3_motor_reset_counts(L_motor);
 
-	// 前進
-	ev3_motor_rotate(R_motor, 720, 50, false);
-	ev3_motor_rotate(L_motor, 720, 50, false);
-	tslp_tsk(RUN_TIME_MS);
-
 	// スピン
 	ev3_motor_rotate(R_motor, 740, 50, false);
 	ev3_motor_rotate(L_motor, -740, 50, false);
