@@ -44,13 +44,6 @@ void LineMonitor::setThreshold(int8_t threshold) {
     mThreshold = threshold;
 }
 
-// ²X–Ø’Ç‰Á <begin>
-int LineMonitor::getAmbient() const{
-    return mColorSensor.getAmbient();
-}
-
-// ²X–Ø’Ç‰Á <end>
-
 // ‰œR’Ç‰Á <begin>
 int8_t LineMonitor::getThreshold() const{
     return mThreshold;

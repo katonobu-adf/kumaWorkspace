@@ -18,10 +18,6 @@ public:
 
     bool isOnLine() const;
     void setThreshold(int8_t threshold);
-// ²X–Ø’Ç‰Á <begin>
-    int getAmbient() const;
-
-// ²X–Ø’Ç‰Á <end>
 
 // ‰œR’Ç‰Á <begin>
     int8_t getThreshold() const;

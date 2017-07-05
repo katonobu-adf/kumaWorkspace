@@ -13,35 +13,41 @@ extern "C" {
 #include "ev3api.h"
 
 /*
- *  ï¿½eï¿½^ï¿½Xï¿½Nï¿½Ì—Dï¿½ï¿½xï¿½Ì’ï¿½`
+ *  Šeƒ^ƒXƒN‚Ì—Dæ“x‚Ì’è‹`
  */
-#define MAIN_PRIORITY    TMIN_APP_TPRI + 1  /* ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½^ï¿½Xï¿½Nï¿½Ì—Dï¿½ï¿½x */
-#define MEASURE_PRIORITY  TMIN_APP_TPRI + 2
+#define MAIN_PRIORITY    TMIN_APP_TPRI + 1  /* ƒƒCƒ“ƒ^ƒXƒN‚Ì—Dæ“x */
+#define TRACER_PRIORITY  TMIN_APP_TPRI + 2
+#define READY_PRIORITY  TMIN_APP_TPRI + 3
 
-// ï¿½ï¿½ï¿½Rï¿½Ç‰ï¿½ <begin>
+// ‰œR’Ç‰Á <begin>
 #define BT_TASK_PRIORITY  TMIN_APP_TPRI + 3
-// ï¿½ï¿½ï¿½Rï¿½Ç‰ï¿½ <end>
+// ‰œR’Ç‰Á <end>
 
 /*
- *  ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½ÉˆË‘ï¿½ï¿½ï¿½ï¿½ï¿½Â”\ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ï¿½è”ï¿½Ì’ï¿½`
+ *  ƒ^[ƒQƒbƒg‚ÉˆË‘¶‚·‚é‰Â”\«‚Ì‚ ‚é’è”‚Ì’è‹`
  */
 #ifndef STACK_SIZE
-#define STACK_SIZE      4096        /* ï¿½^ï¿½Xï¿½Nï¿½ÌƒXï¿½^ï¿½bï¿½Nï¿½Tï¿½Cï¿½Y */
+#define STACK_SIZE      4096        /* ƒ^ƒXƒN‚ÌƒXƒ^ƒbƒNƒTƒCƒY */
 #endif /* STACK_SIZE */
 
 /*
- *  ï¿½Öï¿½ï¿½Ìƒvï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
+ *  ŠÖ”‚Ìƒvƒƒgƒ^ƒCƒvéŒ¾
  */
 #ifndef TOPPERS_MACRO_ONLY
-
 extern void main_task(intptr_t exinf);
-extern void measure_ambient_task(intptr_t exinf);
-extern void measure_bright_task(intptr_t exinf);
-extern void ev3_cyc_ambient(intptr_t exinf);
-extern void ev3_cyc_bright(intptr_t exinf);
-// ï¿½ï¿½ï¿½Rï¿½Ç‰ï¿½ <begin>
+
+extern void ev3_cyc_task_runer(intptr_t exinf);
+/*
+ *@ev3_cyc_task_runer“à‚ÅÀs‚³‚ê‚éƒ^ƒXƒN
+ */
+extern void ready_task(intptr_t exinf);
+extern void tracer_task(intptr_t exinf);
+
+
+
+// ‰œR’Ç‰Á <begin>
 extern void bt_task(intptr_t exinf);
-// ï¿½ï¿½ï¿½Rï¿½Ç‰ï¿½ <end>
+// ‰œR’Ç‰Á <end>
 #endif /* TOPPERS_MACRO_ONLY */
 
 #ifdef __cplusplus
