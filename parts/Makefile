@@ -1,7 +1,7 @@
 #
 # Makefile for a workspace of EV3 Platform.
 #
-
+TGT = appx
 #
 # Include configurations of EV3RT SDK
 #
@@ -98,7 +98,7 @@ app: $(APPLDIR) prepare-obj-folder
 	make module_cfg.h && \
 	make -j8 && \
 	cp app $(PWD)/app # && cp app $(PWD)/app-$(subst /,,$(app))
-
+	cp app ${TGT}
 endif
 
 usage:

@@ -8,10 +8,9 @@
  * コンストラクタ
  * @param tail      転倒防止
  */
-ReadyToStart::ReadyToStart(const ev3api::Motor* tail)
+ReadyToStart::ReadyToStart(ev3api::Motor& tail)
     :   mTail(tail),
         mIsInitialized(false) {
-
 }
 
 /*
@@ -21,7 +20,7 @@ void ReadyToStart::init(){
     mTail.setBrake(true); //ブレーキモードの設定
     mTail.reset(); // モータ内の角度リセット
     
-    ReadyToStart::mIsInitialized = true;
+   mIsInitialized = true;
 }
 
 /*
@@ -30,7 +29,7 @@ void ReadyToStart::init(){
  */
  void ReadyToStart::run(signed int angle){
      if(ReadyToStart::mIsInitialized == false){
-         ReadyToStart->init();
+         init();
      }
 
      float pwm = (float)(angle - mTail.getCount() )*P_GAIN; /* 比例制御 */
