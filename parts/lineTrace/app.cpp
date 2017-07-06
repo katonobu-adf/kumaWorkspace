@@ -10,6 +10,7 @@
 #include "LineTracer.h"
 #include "TouchSensor.h"
 #include "ReadyToStart.h"
+#include "Driver.h"
 
 // デストラクタ問題の回避
 void *__dso_handle=0;   // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -46,6 +47,7 @@ static LineMonitor     *gLineMonitor;
 static Balancer        *gBalancer;
 static BalancingWalker *gBalancingWalker;
 static LineTracer      *gLineTracer;
+       Driver          *gDriver;
 
 // 佐々木<begin>
 static ReadyToStart    *gReadyToStart;
@@ -63,6 +65,8 @@ static void user_system_create() {
                                            gBalancer);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gLineTracer      = new LineTracer(gLineMonitor, gBalancingWalker);
+
+    gDriver          = new Driver();
 
 // 佐々木<begin>
     gReadyToStart    = new ReadyToStart(gTail);
@@ -119,19 +123,22 @@ void main_task(intptr_t unused)
  */
 void ev3_cyc_task_runer(intptr_t)
 {
-    switch(state){
-        case 0:
-            act_tsk(READY_TASK);        
-            break;
-        case 1:
-            act_tsk(TRACER_TASK);
-            break;
-        case 2:
-            wup_tsk(MAIN_TASK);
-            break;
-        default:
-            break;
-    }
+
+    gDriver->run();
+
+    // switch(state){
+    //     case 0:
+    //         act_tsk(READY_TASK);        
+    //         break;
+    //     case 1:
+    //         act_tsk(TRACER_TASK);
+    //         break;
+    //     case 2:
+    //         wup_tsk(MAIN_TASK);
+    //         break;
+    //     default:
+    //         break;
+    // }
 }
 
 /**
