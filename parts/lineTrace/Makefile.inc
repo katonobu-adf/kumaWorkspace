@@ -7,7 +7,12 @@ APPL_CXXOBJS += \
 	LineMonitor.o \
 	BalancerCpp.o \
 	LineTracer.o \
-	ReadyToStart.o
+	ReadyToStart.o \
+	ReadyToStartX.o \
+	Driver.o \
+	TaskHolder.o
+	
+
 
 SRCLANG := c++
 

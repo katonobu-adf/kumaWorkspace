@@ -1,6 +1,11 @@
 
 #include "ReadyToStartX.h"
 
-int ReadyToStart::run(){
-    
+ReadyToStartX::ReadyToStartX(){
+    //super();
+}
+
+// Override
+int ReadyToStartX::run(){
+    return 0;
 }

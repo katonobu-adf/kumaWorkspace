@@ -4,10 +4,12 @@
 class TaskHolder {
 public:
     TaskHolder();
-    int run();
+    virtual int init();
+    virtual int run();
 
 protected:
     void tail_control(signed int angle);
+    int  subState;
 };
 
 

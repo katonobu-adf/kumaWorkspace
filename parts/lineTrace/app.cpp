@@ -95,6 +95,7 @@ static void user_system_destroy()
     delete gLineMonitor;
     delete gBalancingWalker;
     delete gBalancer;
+    delete gDriver;
 
     ter_tsk(BT_TASK);
     fclose(bt);
@@ -123,8 +124,7 @@ void main_task(intptr_t unused)
  */
 void ev3_cyc_task_runer(intptr_t)
 {
-
-    gDriver->run();
+    gDriver->run(state);
 
     // switch(state){
     //     case 0:

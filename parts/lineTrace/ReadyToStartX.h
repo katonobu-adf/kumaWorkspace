@@ -4,8 +4,11 @@
 
 #include "TaskHolder.h"
 
-class ReadyToStart : TaskHolder {
-
+// extends TaskHolder
+class ReadyToStartX : public TaskHolder {
+public:
+    ReadyToStartX();
+    int run();
 };
 
 
