@@ -11,6 +11,7 @@
 #include "TouchSensor.h"
 #include "ReadyToStart.h"
 #include "Driver.h"
+#include "Navigator.h"
 
 // デストラクタ問題の回避
 void *__dso_handle=0;   // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -21,17 +22,11 @@ using ev3api::GyroSensor;
 using ev3api::Motor;
 using ev3api::TouchSensor;
 
-#define TAIL_ANGLE_STAND_UP  92 /* 完全停止時の角度[度] */
-#define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度[度] */
-
-#define P_GAIN             2.5F /* 完全停止用モータ制御比例係数 */
-#define PWM_ABS_MAX          60 /* 完全停止用モータ制御PWM絶対最大値 */
-
-static int      bt_cmd = 0;     /* Bluetoothコマンド 1:リモートスタート */
+//static int      bt_cmd = 0;     /* Bluetoothコマンド 1:リモートスタート */
 static FILE     *bt = NULL;     /* Bluetoothファイルハンドル */
 
 // 佐々木<begin>
-int state = 0;            /* task_runer 内で実行するタスクを決める変数 */
+//int gState = 0;            /* Driver 内で実行するタスクを決める変数 */
 // 佐々木<end>
 
 // オブジェクトを静的に確保する
@@ -46,12 +41,11 @@ Motor       gTail(PORT_A);
 static LineMonitor     *gLineMonitor;
 static Balancer        *gBalancer;
 static BalancingWalker *gBalancingWalker;
-static LineTracer      *gLineTracer;
-       Driver          *gDriver;
 
-// 佐々木<begin>
-static ReadyToStart    *gReadyToStart;
-// 佐々木<end>
+// 佐々木、奥山 begin
+static Navigator       *gNavigator;
+static Driver          *gDriver;
+// 佐々木、奥山 end
 
 /**
  * EV3システム生成
@@ -64,13 +58,15 @@ static void user_system_create() {
                                            gRightWheel,
                                            gBalancer);
     gLineMonitor     = new LineMonitor(gColorSensor);
-    gLineTracer      = new LineTracer(gLineMonitor, gBalancingWalker);
 
-    gDriver          = new Driver();
-
-// 佐々木<begin>
-    gReadyToStart    = new ReadyToStart(gTail);
-// 佐々木<end>
+    gNavigator       = new Navigator(gLineMonitor, 
+                                     gBalancingWalker,
+                                     gTouchSensor);
+    
+    gDriver          = new Driver( gNavigator,
+                                   gLineMonitor, 
+                                   gBalancingWalker,
+                                   gTail);
 
     /* Open Bluetooth file */
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
@@ -91,7 +87,6 @@ static void user_system_destroy()
     gLeftWheel.reset();
     gRightWheel.reset();
 
-    delete gLineTracer;
     delete gLineMonitor;
     delete gBalancingWalker;
     delete gBalancer;
@@ -102,7 +97,6 @@ static void user_system_destroy()
 }
 
 // 佐々木<begin>
-
 /**
  * メインタスク
  */
@@ -124,47 +118,19 @@ void main_task(intptr_t unused)
  */
 void ev3_cyc_task_runer(intptr_t)
 {
-    gDriver->run(state);
-
-    // switch(state){
-    //     case 0:
-    //         act_tsk(READY_TASK);        
-    //         break;
-    //     case 1:
-    //         act_tsk(TRACER_TASK);
-    //         break;
-    //     case 2:
-    //         wup_tsk(MAIN_TASK);
-    //         break;
-    //     default:
-    //         break;
-    // }
-}
-
-/**
- * 走行体を静止させるタスク
- */
-void ready_task(intptr_t exinf)
-{
-    gReadyToStart->run( TAIL_ANGLE_STAND_UP ); // 尻尾を降ろし、走行体を固定する
-    if(bt_cmd == 1 || gTouchSensor.isPressed() == 1)
-    {
-        state = 1; // state を 0 から 1 へ移行
-    }
+    act_tsk(TRACER_TASK);
 }
 
 // 佐々木<end>
-
 /**
  * ライントレースタスク
  */
 void tracer_task(intptr_t exinf)
 {
     if ( ev3_button_is_pressed(BACK_BUTTON) ) {
-        state = 2;  // バックボタン押下(state を 1 から 2 へ移行)
+        wup_tsk(MAIN_TASK);  // バックボタン押下
     } else {
-        //tail_control(TAIL_ANGLE_DRIVE); /* バランス走行用角度に制御 */
-        gLineTracer->run();  // 倒立走行
+        gDriver->run();
     }
     ext_tsk();
 }
@@ -183,7 +149,7 @@ void bt_task(intptr_t unused)
         uint8_t c = fgetc(bt);  /* 受信 */
         switch(c){
         case '1' :
-            bt_cmd = 1;
+            gNavigator->setBtCommand(1);
             break;
         default:
             break;
@@ -191,3 +157,15 @@ void bt_task(intptr_t unused)
         fputc(c, bt); /* エコーバック */
     }
 }
+
+/**
+ * 走行体を静止させるタスク
+ */
+// void ready_task(intptr_t exinf)
+// {
+//     gReadyToStart->run( TAIL_ANGLE_STAND_UP ); // 尻尾を降ろし、走行体を固定する
+//     if(bt_cmd == 1 || gTouchSensor.isPressed() == 1)
+//     {
+//         gState = 1; // state を 0 から 1 へ移行
+//     }
+// }

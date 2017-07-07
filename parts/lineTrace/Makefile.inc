@@ -6,11 +6,12 @@ APPL_CXXOBJS += \
 	BalancingWalker.o \
 	LineMonitor.o \
 	BalancerCpp.o \
-	LineTracer.o \
 	ReadyToStart.o \
-	ReadyToStartX.o \
+	LineTracer.o \
+	Spin.o \
 	Driver.o \
-	TaskHolder.o
+	TaskHolder.o \
+	Navigator.o 
 	
 
 

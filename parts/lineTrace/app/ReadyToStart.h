@@ -1,18 +1,19 @@
-#ifndef  READYTOSTART_H
-#define  READYTOSTART_H
 
-#include "Motor.h"
+#ifndef   READYTOSTART_H
+#define   READYTOSTART_H
 
-class ReadyToStart {
+#include "TaskHolder.h"
+
+// extends TaskHolder
+class ReadyToStart : public TaskHolder {
 public:
-    ReadyToStart(ev3api::Motor& tail);
-    void run(signed int angle);
-
-private:
-    ev3api::Motor mTail;
-    bool mIsInitialized;
-
-    void init();
+    ReadyToStart(
+           Navigator * navigator,
+           const LineMonitor * lineMonitor,
+           BalancingWalker * balancingWalker,
+           ev3api::Motor &tail);
+    int run();
 };
 
-#endif   /* READYTOSTART_H */
+
+#endif    /* READYTOSTART_X_H */

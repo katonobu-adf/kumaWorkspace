@@ -9,19 +9,15 @@
 #ifndef EV3_APP_LINETRACER_H_
 #define EV3_APP_LINETRACER_H_
 
-#include "TaskHolder.h"
-#include "Navigator.h"
 #include "LineMonitor.h"
 #include "BalancingWalker.h"
 
-class LineTracer : public TaskHolder{
+class LineTracer {
 public:
-    LineTracer(
-           Navigator * navigator,
-           const LineMonitor * lineMonitor,
-           BalancingWalker * balancingWalker,
-           ev3api::Motor &tail);
-    int run();
+    LineTracer(const LineMonitor* lineMonitor,
+               BalancingWalker* balancingWalker);
+
+    void run();
 
 private:
 // 奥山追加 <begin>
@@ -43,10 +39,16 @@ private:
     float u_t;           /* 操作量計算領域（実数） */
     int temp_turn;       /* 操作量計算領域（整数） */
     unsigned short int m_val;     /* 観測値 */
+// 奥山追加 <end>
 
-private:
+    const LineMonitor* mLineMonitor;
+    BalancingWalker* mBalancingWalker;
+    bool mIsInitialized;
+
+    int calcDirection(bool isOnLine);
+    
+// 奥山追加 <begin> overload
     int calcDirection(int brightness);
-    int callCount;
 // 奥山追加 <end>    
 };
 

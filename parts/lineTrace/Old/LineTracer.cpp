@@ -25,48 +25,50 @@ const float LineTracer::TD = (0.125 * TC); /* 微分動作の比例係数 */
  * @param lineMonitor     ライン判定
  * @param balancingWalker 倒立走行
  */
-LineTracer::LineTracer(
-           Navigator * navigator,
-           const LineMonitor * lineMonitor,
-           BalancingWalker * balancingWalker,
-           ev3api::Motor &tail)
-    : TaskHolder(navigator,lineMonitor, balancingWalker,tail) {
-        callCount=0;
-          ;
+LineTracer::LineTracer(const LineMonitor* lineMonitor,
+                       BalancingWalker* balancingWalker)
+    : mLineMonitor(lineMonitor),
+      mBalancingWalker(balancingWalker),
+      mIsInitialized(false) {
 }
 
 /**
  * ライントレースする
  */
-int LineTracer::run() {
-    // 奥山
-    // 10秒ライントレースしたら別のことやれ
-    callCount++;
-    if (callCount > 2500) {
-        return 1;
-    }
-
-    // 奥山
-    
+void LineTracer::run() {
     if (mIsInitialized == false) {
         mBalancingWalker->init();
         mIsInitialized = true;
     }
-    
-    tail_control(TAIL_ANGLE_DRIVE);
+
+    //bool isOnLine = mLineMonitor->isOnLine();
     int  brightness = mLineMonitor->getBrightness();
 
     // 走行体の向きを計算する
+    //int direction = calcDirection(isOnLine);
     int direction = calcDirection(brightness);
 
     mBalancingWalker->setCommand(BalancingWalker::LOW, direction);
 
     // 倒立走行を行う
     mBalancingWalker->run();
-
-    return 0;
 }
 
+/**
+ * 走行体の向きを計算する
+ * @param isOnLine true:ライン上/false:ライン外
+ * @retval 30  ライン上にある場合(右旋回指示)
+ * @retval -30 ライン外にある場合(左旋回指示)
+ */
+int LineTracer::calcDirection(bool isOnLine) {
+    if (isOnLine) {
+        // ライン上にある場合
+        return BalancingWalker::LOW;
+    } else {
+        // ライン外にある場合
+        return -BalancingWalker::LOW;
+    }
+}
 
 // 奥山追加 <begin>
 int LineTracer::calcDirection(int brightness){
@@ -78,7 +80,7 @@ int LineTracer::calcDirection(int brightness){
     int_e_t = int_e_t + e_t * INTERVAL; /* 積分項を算出 */
     der_e_t = (e_t - prev_e_t) / INTERVAL; /* 微分項を算出 */
     u_t = KP * (e_t + int_e_t / TI + TD * der_e_t); /* 操作量を計算 */
-    temp_turn = -(int)u_t; /* 操作量を整数化 */
+    temp_turn = (int)u_t; /* 操作量を整数化 */
 
     if (temp_turn > TURN_MAX) /* 操作量の上限設定 */
         temp_turn = TURN_MAX;
