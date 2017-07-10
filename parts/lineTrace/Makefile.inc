@@ -11,7 +11,8 @@ APPL_CXXOBJS += \
 	Spin.o \
 	Driver.o \
 	TaskHolder.o \
-	Navigator.o 
+	Navigator.o \
+	UpStep.o
 	
 
 
