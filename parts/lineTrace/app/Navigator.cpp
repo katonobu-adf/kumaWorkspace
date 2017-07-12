@@ -9,6 +9,7 @@ Navigator::Navigator(const LineMonitor* lineMonitor,
           mTouchSensor(touchSensor)
 {
     mState = 0;
+    mBtCommand = 0;
 }
 
 void Navigator::setState(int state){

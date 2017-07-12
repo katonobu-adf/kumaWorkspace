@@ -41,13 +41,12 @@ LineTracer::LineTracer(
 int LineTracer::run() {
     // 奥山
     // 10秒ライントレースしたら別のことやれ
-    callCount++;
-    if (callCount > 2500) {
-        return 1;
-    }
+    // callCount++;
+    // if (callCount > 1000) {
+    //     return 1;
+    // }
 
     // 奥山
-    
     if (mIsInitialized == false) {
         mBalancingWalker->init();
         mIsInitialized = true;
@@ -59,7 +58,7 @@ int LineTracer::run() {
     // 走行体の向きを計算する
     int direction = calcDirection(brightness);
 
-    mBalancingWalker->setCommand(BalancingWalker::LOW, direction);
+    mBalancingWalker->setCommand(BalancingWalker::HIGH, direction);
 
     // 倒立走行を行う
     mBalancingWalker->run();

@@ -26,7 +26,15 @@ public:
 
     void init();
     void run();
+    void blindWalk( int lPwmMotor, int rPwmMotor);
+    int  brake( int brake );
     void setCommand(int forward, int turn);
+
+// 奥山 追加
+    void setSpinMode();
+    void unsetSpinMode();
+    int  spin(int round);
+// 奥山 追加
 
 private:
     const ev3api::GyroSensor& mGyroSensor;
@@ -35,6 +43,14 @@ private:
     Balancer* mBalancer;
     int mForward;
     int mTurn;
+
+// 奥山 追加
+    int mMode;
+    int mRWheelCount;
+    int mLWheelCount;
+    int mRWheelOffset;
+    int mLWheelOffset;
+// 奥山 追加
 };
 
 #endif  // EV3_UNIT_BALANCINGWALKER_H_

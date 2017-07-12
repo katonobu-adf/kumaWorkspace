@@ -90,6 +90,7 @@ static void user_system_destroy()
     delete gLineMonitor;
     delete gBalancingWalker;
     delete gBalancer;
+    delete gNavigator;
     delete gDriver;
 
     ter_tsk(BT_TASK);
@@ -154,18 +155,6 @@ void bt_task(intptr_t unused)
         default:
             break;
         }
-        fputc(c, bt); /* エコーバック */
+        //fputc(c, bt); /* エコーバック */
     }
 }
-
-/**
- * 走行体を静止させるタスク
- */
-// void ready_task(intptr_t exinf)
-// {
-//     gReadyToStart->run( TAIL_ANGLE_STAND_UP ); // 尻尾を降ろし、走行体を固定する
-//     if(bt_cmd == 1 || gTouchSensor.isPressed() == 1)
-//     {
-//         gState = 1; // state を 0 から 1 へ移行
-//     }
-// }

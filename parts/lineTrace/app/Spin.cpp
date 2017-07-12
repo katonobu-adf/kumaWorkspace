@@ -14,35 +14,55 @@ Spin::Spin(
            ev3api::Motor &tail)
     : TaskHolder(navigator,lineMonitor, balancingWalker,tail) {
         callCount=0;
-          ;
+        subState=0;
 }
 
 /**
- * 適当ｓ
+ * 適当
  */
 int Spin::run() {
     // 奥山
-    // 10秒ライントレースしたら別のことやれ
+    int ret;
+    int curSpeed=mBalancingWalker->brake(0);
+
     callCount++;
-    if (callCount > 2500) {
-        return 1;
+    switch(subState){
+        case 0:
+            if (callCount%100==0){
+                if ( curSpeed > 20 ){
+                    mBalancingWalker->brake(1);
+                }
+                else {
+                    subState = 1;
+                }
+            }
+            mBalancingWalker->run();
+            break;
+
+        case 1:
+            ret = tail_control(TAIL_ANGLE_WALK_BY, 0.5);
+            if ( ret == 1 ){ subState = 2;}
+            mBalancingWalker->run();
+            break;
+        case 2:
+            mBalancingWalker->setSpinMode();
+            mBalancingWalker->blindWalk(0,0);
+            subState = 3;
+            break;
+        case 3:
+            ret = mBalancingWalker->spin(740);
+            if ( ret == 1 ){ subState = 4;}
+            break;
+        case 4:
+            mBalancingWalker->unsetSpinMode();
+            mBalancingWalker->blindWalk(20,20);
+            subState = 5;
+            break;
+        default:
+            break;
     }
-
-    // 奥山
-    tail_control(TAIL_ANGLE_STAND_UP);
-    //int  brightness = mLineMonitor->getBrightness();
-
-    // 走行体の向きを計算する
-    //int direction = calcDirection(brightness);
-
-    mBalancingWalker->setCommand(-20, 0);
-
-    // 倒立走行を行う
-    mBalancingWalker->run();
 
     return 0;
 }
-
-
 
 // 奥山追加 <end>
