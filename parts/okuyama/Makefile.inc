@@ -6,9 +6,15 @@ APPL_CXXOBJS += \
 	BalancingWalker.o \
 	LineMonitor.o \
 	BalancerCpp.o \
+	ReadyToStart.o \
 	LineTracer.o \
-	DrivingMode.o \
-	Spin.o
+	Spin.o \
+	Driver.o \
+	TaskHolder.o \
+	Navigator.o \
+	UpStep.o
+	
+
 
 SRCLANG := c++
 
@@ -19,10 +25,8 @@ include $(EV3RT_SDK_LIB_DIR)/libcpp-ev3/Makefile
 
 endif
 
-APPL_DIR += $(mkfile_path)app $(mkfile_path)unit $(mkfile_path)drive
+APPL_DIR += $(mkfile_path)app $(mkfile_path)unit
 
 INCLUDES += \
 	-I$(mkfile_path)app \
-	-I$(mkfile_path)unit \
-	-I$(mkfile_path)drive
-	
+	-I$(mkfile_path)unit

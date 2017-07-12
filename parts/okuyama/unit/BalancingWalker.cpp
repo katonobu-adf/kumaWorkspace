@@ -29,40 +29,17 @@ BalancingWalker::BalancingWalker(const ev3api::GyroSensor& gyroSensor,
       mRightWheel(rightWheel),
       mBalancer(balancer),
       mForward(LOW),
-      mTurn(LOW) {
-          subState=0;
-          callCount=0;
+      mTurn(LOW),
+      mMode(0) {
 }
 
 /**
  * バランス走行する
  */
 void BalancingWalker::run() {
-
     int16_t angle = mGyroSensor.getAnglerVelocity();  // ジャイロセンサ値
     int rightWheelEnc = mRightWheel.getCount();       // 右モータ回転角度
     int leftWheelEnc  = mLeftWheel.getCount();        // 左モータ回転角度
-
-    callCount++;
-    switch(subState){
-        case 0:
-           mForward = LOW;
-           if ( callCount >=750  ){
-                subState = 1;
-           }
-           break;
-        case 1:
-           mForward = -LOW;
-           if ( callCount >=1500 ){
-               callCount = 0;
-               subState = 0;
-           }
-           break;
-        case 2:
-           mForward = 10;
-           break;
-    }
-
 
     mBalancer->setCommand(mForward, mTurn);
 
@@ -73,6 +50,7 @@ void BalancingWalker::run() {
     mLeftWheel.setPWM(mBalancer->getPwmLeft());
     mRightWheel.setPWM(mBalancer->getPwmRight());
 }
+
 
 /**
  * バランス走行に必要なものをリセットする
@@ -96,4 +74,50 @@ void BalancingWalker::init() {
 void BalancingWalker::setCommand(int forward, int turn) {
     mForward = forward;
     mTurn    = turn;
+}
+
+
+int BalancingWalker::brake(int brake){
+    // int lPwm, rPwm;
+    // lPwm = mLeftWheel.getPWM();
+    // rPwm = mRightWheel.getPWM();
+
+    mForward -= brake;
+
+    return mForward;
+}
+
+void BalancingWalker::blindWalk(int lPwmMotor, int rPwmMotor){
+    // 左右モータに回転を指示する
+    mLeftWheel.setPWM(  lPwmMotor );
+    mRightWheel.setPWM( rPwmMotor );
+}
+
+void BalancingWalker::setSpinMode()
+{
+    mMode = 99;
+    mRWheelOffset = mRightWheel.getCount();// 右モータ回転角度
+    mLWheelOffset = mRightWheel.getCount();// 左モータ回転角度
+    mRWheelCount = 0;
+    mLWheelCount = 0;
+}
+void BalancingWalker::unsetSpinMode()
+{
+    mMode = 0;
+}
+int BalancingWalker::spin( int round )
+{
+    mLWheelCount = mLeftWheel.getCount() - mLWheelOffset;
+    mRWheelCount = mRightWheel.getCount() - mRWheelOffset;
+    
+    // Modeチェック
+    if ( mMode != 99 ) return -1;
+
+    if ( mRWheelCount >= round || mLWheelCount <= -(round))
+    {
+        return 1; // End of Turn
+    }
+    mLeftWheel.setPWM(-10);
+    mRightWheel.setPWM(10);
+    return 0; // Must Continue (Not Ent of Turn)
 }

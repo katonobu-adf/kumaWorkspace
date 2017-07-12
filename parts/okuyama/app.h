@@ -17,6 +17,7 @@ extern "C" {
  */
 #define MAIN_PRIORITY    TMIN_APP_TPRI + 1  /* メインタスクの優先度 */
 #define TRACER_PRIORITY  TMIN_APP_TPRI + 2
+#define READY_PRIORITY  TMIN_APP_TPRI + 3
 
 // 奥山追加 <begin>
 #define BT_TASK_PRIORITY  TMIN_APP_TPRI + 3
@@ -33,12 +34,17 @@ extern "C" {
  *  関数のプロトタイプ宣言
  */
 #ifndef TOPPERS_MACRO_ONLY
-
 extern void main_task(intptr_t exinf);
+extern void ev3_cyc_task_runer(intptr_t exinf);
+/*
+ *　ev3_cyc_task_runer内で実行されるタスク
+ */
+extern void ready_task(intptr_t exinf);
 extern void tracer_task(intptr_t exinf);
-extern void ev3_cyc_tracer(intptr_t exinf);
+
 // 奥山追加 <begin>
 extern void bt_task(intptr_t exinf);
+
 // 奥山追加 <end>
 #endif /* TOPPERS_MACRO_ONLY */
 

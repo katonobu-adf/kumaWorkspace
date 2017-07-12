@@ -6,17 +6,17 @@
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
  *****************************************************************************/
 
-#ifndef EV3_APP_LINETRACER_H_
-#define EV3_APP_LINETRACER_H_
+#ifndef UPSTEP_H_
+#define UPSTEP_H_
 
 #include "TaskHolder.h"
 #include "Navigator.h"
 #include "LineMonitor.h"
 #include "BalancingWalker.h"
 
-class LineTracer : public TaskHolder{
+class UpStep : public TaskHolder{
 public:
-    LineTracer(
+    UpStep(
            Navigator * navigator,
            const LineMonitor * lineMonitor,
            BalancingWalker * balancingWalker,
@@ -25,16 +25,6 @@ public:
 
 private:
 // 奥山追加 <begin>
-/* PID 制御用　マクロ定義 */
-    static const float INTERVAL;   /* 制御間隔 4 [ms] */
-    static const int   TURN_MAX;   /* 操作量の最大値 */
-    static const int   TURN_MIN;   /* 操作量の最小値 */
-    static const float KC;         /* 限界感度法による持続振動時の比例ゲイン */
-    static const float TC;         /* 限界感度法による持続振動の周期 */
-    static const float KP;         /* 比例動作の比例係数 */
-    static const float TI;         /* 積分動作の比例係数 */
-    static const float TD;         /* 微分動作の比例係数 */
-
     /* PID 制御用　変数宣言 */
     float e_t;           /* 偏差 */
     float der_e_t=0;     /* 偏差の微分項 */
@@ -45,9 +35,8 @@ private:
     unsigned short int m_val;     /* 観測値 */
 
 private:
-    int calcDirection(int brightness);
     int callCount;
 // 奥山追加 <end>    
 };
 
-#endif  // EV3_APP_LINETRACER_H_
+#endif  // UPSTEP_H_
