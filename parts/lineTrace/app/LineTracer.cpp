@@ -13,11 +13,15 @@
 const float LineTracer::INTERVAL = 0.004;  /* §ŒäŠÔŠu 4 [ms] */
 const int   LineTracer::TURN_MAX = 100;    /* ‘€ì—Ê‚ÌÅ‘å’l */
 const int   LineTracer::TURN_MIN = (-100); /* ‘€ì—Ê‚ÌÅ¬’l */
-const float LineTracer::KC = 3;            /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚Ì”ä—áƒQƒCƒ“ */
-const float LineTracer::TC = 0.484;        /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚ÌüŠú */
-const float LineTracer::KP = (0.6 * KC);   /* ”ä—á“®ì‚Ì”ä—áŒW” */
-const float LineTracer::TI = (0.5 * TC);   /* Ï•ª“®ì‚Ì”ä—áŒW” */
-const float LineTracer::TD = (0.125 * TC); /* ”÷•ª“®ì‚Ì”ä—áŒW” */
+// const float LineTracer::KC = 3;            /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚Ì”ä—áƒQƒCƒ“ */
+// const float LineTracer::TC = 0.484;        /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚ÌüŠú */
+// const float LineTracer::KP = (0.6 * KC);   /* ”ä—á“®ì‚Ì”ä—áŒW” */
+// const float LineTracer::TI = (0.5 * TC);   /* Ï•ª“®ì‚Ì”ä—áŒW” */
+// const float LineTracer::TD = (0.125 * TC); /* ”÷•ª“®ì‚Ì”ä—áŒW” */
+
+const float LineTracer::KP = 0.00;  /* ‚±‚±‚Ì’l‚ğ•Ï‚¦‚Ä‚¢‚­ */
+const float LineTracer::TI = 10000000.0;
+const float LineTracer::TD = 0;
 
 // ‰œR’Ç‰Á <end>
 /**
