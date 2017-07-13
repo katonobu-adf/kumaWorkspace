@@ -40,3 +40,23 @@ bool Navigator::isTouchPressed()
    return false;
 }
 
+// 佐々木追加 <begin>
+
+// app.cpp が利用するもの
+bool Navigator::isOutputRequest(){
+    return request;
+
+}
+
+char *Navigator::getMsg(){
+    request = false;
+    return msg;
+}
+// Navigator を継承したクラスが利用できるもの
+void Navigator::setMsg(int val){
+    sprintf(msg, "%d, ", val);
+    request = true;
+}
+
+// 佐々木追加 <end>
+

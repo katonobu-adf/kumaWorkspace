@@ -44,7 +44,7 @@ extern void tracer_task(intptr_t exinf);
 
 // ‰œŽR’Ç‰Á <begin>
 extern void bt_task(intptr_t exinf);
-
+extern void run_task(intptr_t exinf);
 // ‰œŽR’Ç‰Á <end>
 #endif /* TOPPERS_MACRO_ONLY */
 

@@ -17,18 +17,27 @@ public:
     explicit LineMonitor(const ev3api::ColorSensor& colorSensor);
 
     bool isOnLine() const;
+    
     void setThreshold(int8_t threshold);
+    void setCalibrateBlack(int black);
+    void setCalibrateWhite(int white);
+    int  getCalibrateBlack() const;
+    int  getCalibrateWhite() const;
 
-// ‰œŽR’Ç‰Á <begin>
+// ï¿½ï¿½ï¿½Rï¿½Ç‰ï¿½ <begin>
     int8_t getThreshold() const;
     int  getBrightness() const;
-// ‰œŽR’Ç‰Á <end>
+    int  getNormalizeBrightness() const;
+// ï¿½ï¿½ï¿½Rï¿½Ç‰ï¿½ <end>
 
 private:
     static const int8_t INITIAL_THRESHOLD;
-
     const ev3api::ColorSensor& mColorSensor;
     int8_t mThreshold;
+
+    int mCalibrateBlack;  // ï¿½ï¿½ï¿½ï¿½ï¿½Ì”ï¿½ï¿½ËŒï¿½
+    int mCalibrateWhite;  // ï¿½ï¿½ï¿½Ì”ï¿½ï¿½ËŒï¿½
+    mutable int normalizeBrightness;
 };
 
 #endif  // EV3_UNIT_LINEMONITOR_H_
