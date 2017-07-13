@@ -9,7 +9,7 @@
 #include "LineMonitor.h"
 
 // 定数宣言
-const int8_t LineMonitor::INITIAL_THRESHOLD = 20;  // 黒色の光センサ値
+const int8_t LineMonitor::INITIAL_THRESHOLD = 18;  // 黒色の光センサ値
 
 /**
  * コンストラクタ

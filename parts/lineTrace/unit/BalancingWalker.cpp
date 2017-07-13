@@ -11,7 +11,7 @@
 // 定数宣言
 const int BalancingWalker::LOW    = 30;    // 低速
 const int BalancingWalker::NORMAL = 50;    // 通常
-const int BalancingWalker::HIGH   = 70;    // 高速
+const int BalancingWalker::HIGH   = 100;    // 高速
 
 /**
  * コンストラクタ
