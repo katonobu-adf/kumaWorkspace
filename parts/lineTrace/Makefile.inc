@@ -12,7 +12,8 @@ APPL_CXXOBJS += \
 	Driver.o \
 	TaskHolder.o \
 	Navigator.o \
-	UpStep.o
+	UpStep.o \
+	Logging.o
 	
 
 
