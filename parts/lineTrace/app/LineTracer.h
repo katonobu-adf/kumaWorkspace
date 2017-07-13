@@ -13,13 +13,14 @@
 #include "Navigator.h"
 #include "LineMonitor.h"
 #include "BalancingWalker.h"
+#include "Logging.h"
 
 class LineTracer : public TaskHolder{
 public:
     LineTracer(
-           Navigator * navigator,
-           const LineMonitor * lineMonitor,
-           BalancingWalker * balancingWalker,
+           Navigator* navigator,
+           const LineMonitor* lineMonitor,
+           BalancingWalker* balancingWalker,
            ev3api::Motor &tail);
     int run();
 
@@ -47,6 +48,7 @@ private:
 private:
     int calcDirection(int brightness);
     int callCount;
+    Logging* mLogging;
 // ‰œŽR’Ç‰Á <end>    
 };
 

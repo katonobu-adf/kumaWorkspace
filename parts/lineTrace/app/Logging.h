@@ -2,16 +2,20 @@
 	#include <stdio.h>
 #endif
 
+#ifndef EV3API_H
+	#include "ev3api.h"
+#endif
+
 class Logging {
 
 public:
-	Logging(FILE* bt);
+	Logging();
 
 	void send(int val);
 	void send(float val);
-	void send(char val);
+	// void send(char val);
 
 private:
-	FILE* mbt;
+	static FILE* mbt;
 
 };// end class

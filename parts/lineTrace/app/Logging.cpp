@@ -1,9 +1,8 @@
 #include "Logging.h"
 
-FILE* mbt = NULL;
+FILE* Logging::mbt = ev3_serial_open_file(EV3_SERIAL_BT);
 
-Logging::Logging(FILE* bt)
-	: mbt(bt) {;}// end Logging 
+Logging::Logging() {}// end Logging 
 
 void Logging::send(int val) {
 	char str[10];
@@ -25,12 +24,12 @@ void Logging::send(float val) {
 		fputc(str[i++], mbt);
 }// end send
 
-void Logging::send(char val) {
-	char str[10];
+// void Logging::send(char val) {
+// 	char str[10];
 
-	sprintf(str, "%s,", val);
+// 	sprintf(str, "%s,", val);
 
-	int i = 0;
-	while (str[i])
-		fputc(str[i++], mbt);
-}// end send
+// 	int i = 0;
+// 	while (str[i])
+// 		fputc(str[i++], mbt);
+// }// end send

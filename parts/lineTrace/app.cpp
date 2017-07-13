@@ -12,7 +12,6 @@
 #include "ReadyToStart.h"
 #include "Driver.h"
 #include "Navigator.h"
-#include "Logging.h"
 
 // デストラクタ問題の回避
 void *__dso_handle=0;   // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -72,11 +71,6 @@ static void user_system_create() {
     /* Open Bluetooth file */
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     assert(bt != NULL);
-
-    // Logging
-    static Logging *mLogging = new Logging(bt);
-    mLogging->send(99);
-    // end Logging
 
     /* Bluetooth通信タスクの起動 */
     act_tsk(BT_TASK);

@@ -24,18 +24,21 @@ const float LineTracer::TI = 10000000.0;
 const float LineTracer::TD = 0;
 
 // 奥山追加 <end>
+
+Logging* mLogging = new Logging();
+
 /**
  * コンストラクタ
  * @param lineMonitor     ライン判定
  * @param balancingWalker 倒立走行
  */
 LineTracer::LineTracer(
-           Navigator * navigator,
-           const LineMonitor * lineMonitor,
-           BalancingWalker * balancingWalker,
+           Navigator* navigator,
+           const LineMonitor* lineMonitor,
+           BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
-    : TaskHolder(navigator,lineMonitor, balancingWalker,tail) {
-        callCount=0;
+    : TaskHolder(navigator,lineMonitor, balancingWalker, tail) {
+        callCount = 0;
           ;
 }
 
@@ -92,6 +95,8 @@ int LineTracer::calcDirection(int brightness){
 
     /* 現在の偏差を次回の 1 ステップ前の偏差とする */
     prev_e_t = e_t;
+
+    mLogging->send(turn);
     
     return turn;
 }
