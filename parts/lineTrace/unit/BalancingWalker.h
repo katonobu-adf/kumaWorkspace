@@ -16,8 +16,10 @@
 class BalancingWalker {
 public:
     static const int LOW;
-    static const int NORMAL;
-    static const int HIGH;
+    static const int SECOND;
+    static const int THIRD;
+    static const int TOP;
+    static const int HIGHTOP;
 
     BalancingWalker(const ev3api::GyroSensor& gyroSensor,
                     ev3api::Motor& leftWheel,

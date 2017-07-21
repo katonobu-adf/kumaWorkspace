@@ -9,9 +9,11 @@
 #include "BalancingWalker.h"
 
 // 定数宣言
-const int BalancingWalker::LOW    = 30;    // 低速
-const int BalancingWalker::NORMAL = 50;    // 通常
-const int BalancingWalker::HIGH   = 100;    // 高速
+const int BalancingWalker::LOW      = 60;   // KC=2.80 TC=0.444
+const int BalancingWalker::SECOND   = 70;   // KC=1.50 TC=0.588
+const int BalancingWalker::THIRD    = 80;   // KC=2_00 TC=0.660
+const int BalancingWalker::TOP      = 90;   // KC=1.70 TC=0.732
+const int BalancingWalker::HIGHTOP  = 100;  // KC=1.20 TC=0.792
 
 /**
  * コンストラクタ
