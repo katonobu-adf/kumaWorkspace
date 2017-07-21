@@ -25,7 +25,7 @@ const float LineTracer::TD = (0.125 * TC); /* 微分動作の比例係数 */
 
 // 奥山追加 <end>
 
-Logging* mLogging = new Logging();
+// Logging* LineTracer::mLogging = new Logging();
 
 /**
  * コンストラクタ
@@ -38,6 +38,7 @@ LineTracer::LineTracer(
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
     : TaskHolder(navigator,lineMonitor, balancingWalker, tail) {
+        mLogging = new Logging();
         callCount = 0;
           ;
 }
