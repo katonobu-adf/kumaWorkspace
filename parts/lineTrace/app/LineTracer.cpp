@@ -66,7 +66,7 @@ int LineTracer::run() {
     // ‘–s‘Ì‚ÌŒü‚«‚ğŒvZ‚·‚é
     int direction = calcDirection(brightness);
 
-    mBalancingWalker->setCommand(BalancingWalker::HIGHTOP, direction);
+    mBalancingWalker->setCommand(50, direction);
 
     // “|—§‘–s‚ğs‚¤
     mBalancingWalker->run();
