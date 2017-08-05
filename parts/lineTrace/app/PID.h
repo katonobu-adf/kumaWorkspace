@@ -1,12 +1,19 @@
+#ifndef PID_H
+#define PID_H
 
 class PID {
 
 public:
-	PID(float KC, float TC);
+	PID(float kc, float tc);
+	float getKP();
+	float getTI();
+	float getTD();
 
 private:
-    static const float KP;
-    static const float TI;
-    static const float TD;
+    float kp;
+    float ti;
+    float td;
 
 };
+
+#endif

@@ -13,7 +13,8 @@ APPL_CXXOBJS += \
 	TaskHolder.o \
 	Navigator.o \
 	UpStep.o \
-	Logging.o
+	Logging.o \
+	PID.o
 	
 
 

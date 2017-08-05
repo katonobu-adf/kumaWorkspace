@@ -14,6 +14,7 @@
 #include "LineMonitor.h"
 #include "BalancingWalker.h"
 #include "Logging.h"
+#include "PID.h"
 
 class LineTracer : public TaskHolder{
 public:
@@ -25,31 +26,26 @@ public:
     int run();
 
 private:
-// ‰œR’Ç‰Á <begin>
-/* PID §Œä—p@ƒ}ƒNƒ’è‹` */
-    static const float INTERVAL;   /* §ŒäŠÔŠu 4 [ms] */
-    static const int   TURN_MAX;   /* ‘€ì—Ê‚ÌÅ‘å’l */
-    static const int   TURN_MIN;   /* ‘€ì—Ê‚ÌÅ¬’l */
-    static const float KC;         /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚Ì”ä—áƒQƒCƒ“ */
-    static const float TC;         /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚ÌüŠú */
-    static const float KP;         /* ”ä—á“®ì‚Ì”ä—áŒW” */
-    static const float TI;         /* Ï•ª“®ì‚Ì”ä—áŒW” */
-    static const float TD;         /* ”÷•ª“®ì‚Ì”ä—áŒW” */
+    static const float INTERVAL;
+    static const int   TURN_MAX;
+    static const int   TURN_MIN;
 
-    /* PID §Œä—p@•Ï”éŒ¾ */
-    float e_t;           /* •Î· */
-    float der_e_t=0;     /* •Î·‚Ì”÷•ª€ */
-    float int_e_t=0;     /* •Î·‚ÌÏ•ª€ */
-    float prev_e_t=0;    /* 1 ƒXƒeƒbƒv‘O‚Ì•Î· */
-    float u_t;           /* ‘€ì—ÊŒvZ—ÌˆæiÀ”j */
-    int temp_turn;       /* ‘€ì—ÊŒvZ—Ìˆæi®”j */
-    unsigned short int m_val;     /* ŠÏ‘ª’l */
+    float e_t;
+    float der_e_t=0;
+    float int_e_t=0;
+    float prev_e_t=0;
+    float u_t;
+    int temp_turn;
+    unsigned short int m_val;
 
 private:
-    int calcDirection(int brightness);
+    int calcForward(int turn);
+    int calcDirection(int brightness, int forward);
+    int abs(int num);
     int callCount;
     Logging* mLogging;
-// ‰œR’Ç‰Á <end>    
+    PID **pid;
+// â€°Å“Å½Râ€™Ã‡â€°Ã <end>    
 };
 
 #endif  // EV3_APP_LINETRACER_H_

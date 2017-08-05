@@ -8,29 +8,18 @@
 
 #include "LineTracer.h"
 
-// ‰œR’Ç‰Á <begin>
+// <begin>
 
-const float LineTracer::INTERVAL = 0.004;  /* §ŒäŠÔŠu 4 [ms] */
-const int   LineTracer::TURN_MAX = 100;    /* ‘€ì—Ê‚ÌÅ‘å’l */
-const int   LineTracer::TURN_MIN = (-100); /* ‘€ì—Ê‚ÌÅ¬’l */
-const float LineTracer::KC = 1.20;            /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚Ì”ä—áƒQƒCƒ“ */
-const float LineTracer::TC = 0.792;        /* ŒÀŠEŠ´“x–@‚É‚æ‚é‘±U“®‚ÌüŠú */
-const float LineTracer::KP = (0.6 * KC);   /* ”ä—á“®ì‚Ì”ä—áŒW” */
-const float LineTracer::TI = (0.5 * TC);   /* Ï•ª“®ì‚Ì”ä—áŒW” */
-const float LineTracer::TD = (0.125 * TC); /* ”÷•ª“®ì‚Ì”ä—áŒW” */
+const float LineTracer::INTERVAL = 0.004;
+const int   LineTracer::TURN_MAX = 100;
+const int   LineTracer::TURN_MIN = (-100);
 
-// const float LineTracer::KP = 1.20;  /* ‚±‚±‚Ì’l‚ğ•Ï‚¦‚Ä‚¢‚­ */
-// const float LineTracer::TI = 10000000.0;
-// const float LineTracer::TD = 0;
-
-// ‰œR’Ç‰Á <end>
-
-// Logging* LineTracer::mLogging = new Logging();
+// <end>
 
 /**
- * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
- * @param lineMonitor     ƒ‰ƒCƒ“”»’è
- * @param balancingWalker “|—§‘–s
+ * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ * @param lineMonitor     ãƒ©ã‚¤ãƒ³åˆ¤å®š
+ * @param balancingWalker å€’ç«‹èµ°è¡Œ
  */
 LineTracer::LineTracer(
            Navigator* navigator,
@@ -38,23 +27,29 @@ LineTracer::LineTracer(
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
     : TaskHolder(navigator,lineMonitor, balancingWalker, tail) {
+        PID **pid = new PID*[5];
+        pid[0] = new PID(2.80, 0.444);
+        pid[1] = new PID(1.50, 0.588);
+        pid[2] = new PID(2.00, 0.660);
+        pid[3] = new PID(1.70, 0.732);
+        pid[4] = new PID(1.20, 0.792);
         mLogging = new Logging();
         callCount = 0;
           ;
 }
 
 /**
- * ƒ‰ƒCƒ“ƒgƒŒ[ƒX‚·‚é
+ * ãƒ©ã‚¤ãƒ³ãƒˆãƒ¬ãƒ¼ã‚¹ã™ã‚‹
  */
 int LineTracer::run() {
-    // ‰œR
-    // 10•bƒ‰ƒCƒ“ƒgƒŒ[ƒX‚µ‚½‚ç•Ê‚Ì‚±‚Æ‚â‚ê
+    // â€°Å“Å½R
+    // 10â€¢bÆ’â€°Æ’CÆ’â€œÆ’gÆ’Å’Â[Æ’Xâ€šÂµâ€šÂ½â€šÃ§â€¢ÃŠâ€šÃŒâ€šÂ±â€šÃ†â€šÃ¢â€šÃª
     // callCount++;
     // if (callCount > 1000) {
     //     return 1;
     // }
 
-    // ‰œR
+    // â€°Å“Å½R
     if (mIsInitialized == false) {
         mBalancingWalker->init();
         mIsInitialized = true;
@@ -63,43 +58,53 @@ int LineTracer::run() {
     tail_control(TAIL_ANGLE_DRIVE);
     int  brightness = mLineMonitor->getBrightness();
 
-    // ‘–s‘Ì‚ÌŒü‚«‚ğŒvZ‚·‚é
-    int direction = calcDirection(brightness);
+    // é€Ÿåº¦ã‚’è¨ˆç®—ã™ã‚‹
+    int forward = calcForward(temp_turn);
 
-    mBalancingWalker->setCommand(50, direction);
+    // èµ°è¡Œä½“ã®å‘ãã‚’è¨ˆç®—ã™ã‚‹
+    int direction = calcDirection(brightness, forward);
 
-    // “|—§‘–s‚ğs‚¤
+    mBalancingWalker->setCommand(forward, direction);
+
+    // å€’ç«‹èµ°è¡Œã‚’è¡Œã†
     mBalancingWalker->run();
 
     return 0;
 }
 
+int LineTracer::calcForward(int turn) {
+    return (100 - abs(turn) / 25 * 10);// 60 ï½ 100ã€€ã®äº”æ®µéš
+}// end calcForward
 
-// ‰œR’Ç‰Á <begin>
-int LineTracer::calcDirection(int brightness){
+// <begin>
+int LineTracer::calcDirection(int brightness, int forward) {
     int turn;
-    /* PID §Œä—p@‘€ì—Ê‚ÌZo */
-    /* ŠÏ‘ª’l‚ğæ“¾ */
-    e_t = (float)(mLineMonitor->getThreshold()- brightness); /* •Î·‚ğZo */
+    int key = (forward - 60) / 10;
 
-    int_e_t = int_e_t + e_t * INTERVAL; /* Ï•ª€‚ğZo */
-    der_e_t = (e_t - prev_e_t) / INTERVAL; /* ”÷•ª€‚ğZo */
-    u_t = KP * (e_t + int_e_t / TI + TD * der_e_t); /* ‘€ì—Ê‚ğŒvZ */
-    temp_turn = -(int)u_t; /* ‘€ì—Ê‚ğ®”‰» */
+    e_t = (float)(mLineMonitor->getThreshold()- brightness);
 
-    if (temp_turn > TURN_MAX) /* ‘€ì—Ê‚ÌãŒÀİ’è */
+    int_e_t = int_e_t + e_t * INTERVAL;
+    der_e_t = (e_t - prev_e_t) / INTERVAL;
+    u_t = pid[key]->getKP() * (e_t + int_e_t / pid[key]->getTI() + pid[key]->getTD() * der_e_t);
+    temp_turn = -(int)u_t;
+
+    if (temp_turn > TURN_MAX)
         temp_turn = TURN_MAX;
-    if (temp_turn < TURN_MIN) /* ‘€ì—Ê‚Ì‰ÁŒ¸İ’è */
+    if (temp_turn < TURN_MIN)
         temp_turn = TURN_MIN;
     
-    turn = (signed char)temp_turn; /* ‘€ì—Ê‚ğŠm’è */
+    turn = (signed char)temp_turn;
 
-    /* Œ»İ‚Ì•Î·‚ğŸ‰ñ‚Ì 1 ƒXƒeƒbƒv‘O‚Ì•Î·‚Æ‚·‚é */
     prev_e_t = e_t;
 
     mLogging->send(turn);
     
     return turn;
 }
-// ‰œR’Ç‰Á <end>
 
+int LineTracer::abs(int num) {
+    if (num < 0)
+        num *= -1;
+
+    return num;
+}// end abs

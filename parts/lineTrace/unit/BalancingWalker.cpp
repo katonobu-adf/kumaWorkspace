@@ -11,7 +11,7 @@
 // íËêîêÈåæ
 const int BalancingWalker::LOW      = 60;   // KC=2.80 TC=0.444
 const int BalancingWalker::SECOND   = 70;   // KC=1.50 TC=0.588
-const int BalancingWalker::THIRD    = 80;   // KC=2_00 TC=0.660
+const int BalancingWalker::THIRD    = 80;   // KC=2.00 TC=0.660
 const int BalancingWalker::TOP      = 90;   // KC=1.70 TC=0.732
 const int BalancingWalker::HIGHTOP  = 100;  // KC=1.20 TC=0.792
 
