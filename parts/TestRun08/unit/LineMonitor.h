@@ -6,28 +6,23 @@
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
  *****************************************************************************/
 
-#ifndef EV3_UNIT_LINEMONITOR_H_
-#define EV3_UNIT_LINEMONITOR_H_
+#ifndef LINEMONITOR_H_
+#define LINEMONITOR_H_
 
 #include "ColorSensor.h"
 
 // クラス定義
 class LineMonitor {
 public:
-    static const int8_t INITIAL_THRESHOLD;
+    explicit LineMonitor(const ev3api::ColorSensor& colorSensor,
+                         int8_t  intialThreshold );
 
-    explicit LineMonitor(const ev3api::ColorSensor& colorSensor);
-
-    bool isOnLine() const;
-    void setThreshold(int8_t threshold);
-
-// 奥山追加 <begin>
+    void   setThreshold(int8_t threshold);
     int8_t getThreshold() const;
     int    getBrightness();
     float  getAverageBrightness();
     int    getMaxBrightness();
     int    getMinBrightness();
-    // 奥山追加 <end>
 
 private:
     const ev3api::ColorSensor& mColorSensor;
@@ -41,4 +36,4 @@ private:
     int    numOfSize;
 };
 
-#endif  // EV3_UNIT_LINEMONITOR_H_
+#endif  // LINEMONITOR_H_

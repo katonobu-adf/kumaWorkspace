@@ -11,11 +11,9 @@ const int   TaskHolder::TAIL_ANGLE_DRIVE         =  3;  /* バランス走行時
 
 TaskHolder::TaskHolder(
            Navigator* navigator,
-           LineMonitor* lineMonitor,
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
     : mNavigator(navigator),
-      mLineMonitor(lineMonitor),
       mBalancingWalker(balancingWalker),
       mTail(tail),
       mIsInitialized(false) {

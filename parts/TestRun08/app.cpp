@@ -6,10 +6,10 @@
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
  *****************************************************************************/
 
-#include "app.h"
-#include "LineTracer.h"
+#include "SonarSensor.h"
 #include "TouchSensor.h"
-#include "ReadyToStart.h"
+
+#include "app.h"
 #include "Driver.h"
 #include "Navigator.h"
 
@@ -21,13 +21,9 @@ using ev3api::ColorSensor;
 using ev3api::GyroSensor;
 using ev3api::Motor;
 using ev3api::TouchSensor;
+using ev3api::SonarSensor;
 
-//static int      bt_cmd = 0;     /* Bluetoothコマンド 1:リモートスタート */
 static FILE     *bt = NULL;     /* Bluetoothファイルハンドル */
-
-// 佐々木<begin>
-//int gState = 0;            /* Driver 内で実行するタスクを決める変数 */
-// 佐々木<end>
 
 // オブジェクトを静的に確保する
 ColorSensor gColorSensor(PORT_3);
@@ -35,6 +31,7 @@ GyroSensor  gGyroSensor(PORT_4);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
 TouchSensor gTouchSensor(PORT_1);
+SonarSensor gSonarSensor(PORT_2);
 Motor       gTail(PORT_A);
 
 // オブジェクトの定義
@@ -42,10 +39,8 @@ static LineMonitor     *gLineMonitor;
 static Balancer        *gBalancer;
 static BalancingWalker *gBalancingWalker;
 
-// 佐々木、奥山 begin
 static Navigator       *gNavigator;
 static Driver          *gDriver;
-// 佐々木、奥山 end
 
 /**
  * EV3システム生成
@@ -57,14 +52,15 @@ static void user_system_create() {
                                            gLeftWheel,
                                            gRightWheel,
                                            gBalancer);
-    gLineMonitor     = new LineMonitor(gColorSensor);
+    gLineMonitor     = new LineMonitor(gColorSensor, 
+                                       Navigator::INITIAL_THRESHOLD);
 
     gNavigator       = new Navigator(gLineMonitor, 
                                      gBalancingWalker,
-                                     gTouchSensor);
+                                     gTouchSensor,
+                                     gSonarSensor);
     
     gDriver          = new Driver( gNavigator,
-                                   gLineMonitor, 
                                    gBalancingWalker,
                                    gTail);
 
@@ -119,14 +115,14 @@ void main_task(intptr_t unused)
  */
 void ev3_cyc_task_runer(intptr_t)
 {
-    act_tsk(TRACER_TASK);
+    act_tsk(RACER_TASK);
 }
 
 // 佐々木<end>
 /**
  * ライントレースタスク
  */
-void tracer_task(intptr_t exinf)
+void racer_task(intptr_t exinf)
 {
     int ret;
     

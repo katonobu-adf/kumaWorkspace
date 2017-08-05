@@ -17,7 +17,6 @@ public:
 
     TaskHolder(
            Navigator        *navigator,
-           LineMonitor      *lineMonitor,
            BalancingWalker  *balancingWalker,
            ev3api::Motor    &tail);
     
@@ -27,7 +26,6 @@ public:
 
 protected:
     Navigator       *mNavigator;
-    LineMonitor     *mLineMonitor;
     BalancingWalker *mBalancingWalker;
     ev3api::Motor   &mTail;
     bool            mIsInitialized;

@@ -16,7 +16,6 @@ APPL_CXXOBJS += \
 	EmergencyStop.o \
 	Logging.o
 
-
 SRCLANG := c++
 
 ifdef CONFIG_EV3RT_APPLICATION

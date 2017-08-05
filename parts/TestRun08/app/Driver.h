@@ -21,21 +21,19 @@ public:
     static const int  CALIBRATION;      // キャリブレーション
     static const int  READY_TO_START;   // スタート前起立 (Start合図待ち)
     static const int  START_TO_DASH;    // (安定化) スタート
-    static const int  LINE_TRACE;       // ライントレース
+    static const int  LINE_TRACER;      // ライントレース
     static const int  WALK_ON_GRAY;     // 灰色マーカ上走行
     
 
 public:
 
     Driver( Navigator * navigator,
-            LineMonitor* lineMonitor,
             BalancingWalker* balancingWalker,
             ev3api::Motor &tail);
     int run(void);
 
 private:
     Navigator * mNavigator;
-    LineMonitor* mLineMonitor;
     BalancingWalker* mBalancingWalker;
     ev3api::Motor& mTail;
     bool mIsInitialized;

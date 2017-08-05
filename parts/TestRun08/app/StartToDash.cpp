@@ -2,18 +2,18 @@
 
 const int StartToDash::FIRST_STEP  =   50; //  0.2s
 const int StartToDash::SECOND_STEP =  100; //  0.4s
-const int StartToDash::THIRD_STEP  =  175; //  0.7s
-const int StartToDash::FOURTH_STEP =  750; //  3.0s
+const int StartToDash::THIRD_STEP  =  150; //  0.6s
+const int StartToDash::FOURTH_STEP =  400; //  1.6s
 const int StartToDash::FIFTH_STEP  = 1000; //  4.0s
 
 StartToDash::StartToDash(
-           Navigator * navigator,
-           LineMonitor* lineMonitor,
-           BalancingWalker* balancingWalker,
-           ev3api::Motor &tail)
-    : TaskHolder(navigator,lineMonitor, balancingWalker,tail)
+           Navigator       *navigator,
+           BalancingWalker *balancingWalker,
+           ev3api::Motor   &tail)
+    : TaskHolder( navigator, balancingWalker, tail)
 {
     callCount=0;
+    mLogging = new Logging();
 }
 
 // Override
@@ -21,6 +21,7 @@ int StartToDash::run(){
 
     // Intitial Step
     if ( callCount == 0 ){
+        mBalancingWalker->init();
         // Tail 前倒し
         tail_control(TAIL_ANGLE_START_TO_DASH,2);
     } 

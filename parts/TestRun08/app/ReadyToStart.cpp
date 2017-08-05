@@ -2,10 +2,9 @@
 
 ReadyToStart::ReadyToStart(
            Navigator * navigator,
-           LineMonitor* lineMonitor,
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
-    : TaskHolder(navigator,lineMonitor, balancingWalker,tail)
+    : TaskHolder(navigator, balancingWalker, tail)
 {
     ;
 }

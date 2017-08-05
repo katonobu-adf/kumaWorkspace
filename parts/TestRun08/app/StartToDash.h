@@ -2,13 +2,13 @@
 #define   START_TO_DASH_H
 
 #include "TaskHolder.h"
+#include "Logging.h"
 
 // extends TaskHolder
 class StartToDash : public TaskHolder {
 public:
     StartToDash(
            Navigator * navigator,
-           LineMonitor * lineMonitor,
            BalancingWalker * balancingWalker,
            ev3api::Motor &tail);
     int run();
@@ -21,6 +21,10 @@ private:
     
     int callCount;
     int speed;
+
+private:
+    // ログ取得用
+    Logging* mLogging;
 };
 
 #endif    /* START_TO_DASH_H */

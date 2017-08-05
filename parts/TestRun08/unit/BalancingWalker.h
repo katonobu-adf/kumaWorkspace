@@ -6,8 +6,8 @@
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
  *****************************************************************************/
 
-#ifndef EV3_UNIT_BALANCINGWALKER_H_
-#define EV3_UNIT_BALANCINGWALKER_H_
+#ifndef BALANCINGWALKER_H_
+#define BALANCINGWALKER_H_
 
 #include "GyroSensor.h"
 #include "Motor.h"
@@ -57,4 +57,4 @@ private:
 // 奥山 追加
 };
 
-#endif  // EV3_UNIT_BALANCINGWALKER_H_
+#endif  // BALANCINGWALKER_H_

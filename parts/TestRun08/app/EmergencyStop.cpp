@@ -2,10 +2,9 @@
 
 EmergencyStop::EmergencyStop(
            Navigator * navigator,
-           LineMonitor* lineMonitor,
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
-    : TaskHolder(navigator,lineMonitor, balancingWalker,tail)
+    : TaskHolder(navigator, balancingWalker, tail)
 {
     ;
 }
@@ -18,5 +17,6 @@ int EmergencyStop::run(){
 
 int EmergencyStop::stop(){
     mBalancingWalker->stop();
+    tail_control( TAIL_ANGLE_DRIVE, 10 );
     return 1;
 }

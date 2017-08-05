@@ -1,14 +1,17 @@
 
 #include "Navigator.h"
 
-const int Navigator::ARRAY_SIZE = 100; // 300を超えないこと
+const int    Navigator::ARRAY_SIZE = 100;        // 300を超えないこと
+const int8_t Navigator::INITIAL_THRESHOLD = 15;  // 黒色の光センサ値
 
-Navigator::Navigator( const LineMonitor   *lineMonitor,
+Navigator::Navigator( LineMonitor         *lineMonitor,
                       BalancingWalker     *balancingWalker,
-                      ev3api::TouchSensor &touchSensor )
+                      ev3api::TouchSensor &touchSensor,
+                      ev3api::SonarSensor &sonarSensor )
         : mLineMonitor(lineMonitor),
           mBalancingWalker(balancingWalker),
-          mTouchSensor(touchSensor)
+          mTouchSensor(touchSensor),
+          mSonarSensor(sonarSensor)
 {
     mState     = 0;
     mBtCommand = 0;
@@ -19,7 +22,6 @@ Navigator::Navigator( const LineMonitor   *lineMonitor,
     startIdxV   = 0;
     insertIdxV  = 0;
     numOfSizeV  = 0;
-
 }
 
 void Navigator::setState(int state){
@@ -96,4 +98,45 @@ float  Navigator::getPosture(void){
     }
 
     return velocityInt;
+}
+
+/**
+ * ライン閾値を設定する
+ * @param threshold ライン閾値
+ */
+void Navigator::setThreshold(int8_t threshold) {
+    mLineMonitor->setThreshold(threshold);
+}
+
+// LineMonitorのラッパ
+int8_t Navigator::getThreshold() const{
+    return  mLineMonitor->getThreshold();
+}
+
+int Navigator::getBrightness() {
+    return mLineMonitor->getBrightness();
+}
+
+float Navigator::getAverageBrightness() 
+{
+    return mLineMonitor->getAverageBrightness();
+}
+
+int    Navigator::getMaxBrightness(){
+    return mLineMonitor->getMaxBrightness();
+}
+
+int    Navigator::getMinBrightness(){
+    return mLineMonitor->getMinBrightness();
+}
+
+int    Navigator::getDistance(void)
+{
+    bool sense = mSonarSensor.listen();
+    // ソナー感しなかったら -1;
+    if ( sense != true ){
+        return -1;
+    }
+    int   distanceCm = mSonarSensor.getDistance();
+    return distanceCm;
 }

@@ -6,8 +6,8 @@
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
  *****************************************************************************/
 
-#ifndef EV3_APP_LINETRACER_H_
-#define EV3_APP_LINETRACER_H_
+#ifndef LINETRACER_H_
+#define LINETRACER_H_
 
 #include "TaskHolder.h"
 #include "Navigator.h"
@@ -19,14 +19,14 @@ class LineTracer : public TaskHolder{
 public:
     LineTracer(
            Navigator* navigator,
-           LineMonitor* lineMonitor,
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail);
     int run();
 
 private:
-// 奥山追加 <begin>
-/* PID 制御用　マクロ定義 */
+
+// PID 制御用　マクロ定義
+// PIDクラスへ転換
     static const float INTERVAL;   /* 制御間隔 4 [ms] */
     static const int   TURN_MAX;   /* 操作量の最大値 */
     static const int   TURN_MIN;   /* 操作量の最小値 */
@@ -35,8 +35,7 @@ private:
     static const float KP;         /* 比例動作の比例係数 */
     static const float TI;         /* 積分動作の比例係数 */
     static const float TD;         /* 微分動作の比例係数 */
-
-    /* PID 制御用　変数宣言 */
+// PID 制御用　変数宣言
     float e_t;                 /* 偏差 */
     float der_e_t = 0;         /* 偏差の微分項 */
     float int_e_t = 0;         /* 偏差の積分項 */
@@ -44,6 +43,11 @@ private:
     float u_t;                 /* 操作量計算領域（実数） */
     int   temp_turn;           /* 操作量計算領域（整数） */
     unsigned short int m_val;  /* 観測値 */
+
+//  灰色マーカ検知のしきい値
+    static const float  GRAY_BAND_MIN;
+    static const float  GRAY_BAND_MAX;
+    
 
 private:
     int calcDirection(int brightness);
@@ -56,4 +60,4 @@ private:
     Logging* mLogging;
 };
 
-#endif  // EV3_APP_LINETRACER_H_
+#endif  // LINETRACER_H_

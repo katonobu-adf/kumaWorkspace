@@ -9,6 +9,7 @@
 #include "LineTracer.h"
 
 // 奥山追加 <begin>
+// PIDクラスへ転換
 const float LineTracer::INTERVAL = 0.004;  /* 制御間隔 4 [ms] */
 const int   LineTracer::TURN_MAX = 100;    /* 操作量の最大値 */
 const int   LineTracer::TURN_MIN = (-100); /* 操作量の最小値 */
@@ -17,19 +18,22 @@ const float LineTracer::TC = 0.792;        /* 限界感度法による持続振�
 const float LineTracer::KP = (0.6 * KC);   /* 比例動作の比例係数 */
 const float LineTracer::TI = (0.5 * TC);   /* 積分動作の比例係数 */
 const float LineTracer::TD = (0.125 * TC); /* 微分動作の比例係数 */
+
+//  灰色マーカ検知のしきい値
+const float  LineTracer::GRAY_BAND_MIN = 36.0;
+const float  LineTracer::GRAY_BAND_MAX = 46.0;
 // 奥山追加 <end>
 
 /**
  * コンストラクタ
- * @param lineMonitor     ライン判定
+ * @param Navigator     ライン判定
  * @param balancingWalker 倒立走行
  */
 LineTracer::LineTracer(
            Navigator* navigator,
-           LineMonitor* lineMonitor,
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
-    : TaskHolder(navigator,lineMonitor, balancingWalker, tail) {
+    : TaskHolder(navigator, balancingWalker, tail) {
         mLogging = new Logging();
         callCount = 0;
 }
@@ -43,7 +47,7 @@ int LineTracer::run() {
 
     // 初期化処理 (最初1回だけ)
     if (mIsInitialized == false) {
-        mBalancingWalker->init();
+        //mBalancingWalker->init();
         mIsInitialized = true;
         mAvgCnt=0;
     }
@@ -52,13 +56,13 @@ int LineTracer::run() {
     tail_control(TAIL_ANGLE_DRIVE);
 
     // 現在の明るさを求める
-    int   brightness    = mLineMonitor->getBrightness();
+    int   brightness    = mNavigator->getBrightness();
     // 平均の明るさを求める
-    float avgBrightness = mLineMonitor->getAverageBrightness();
+    float avgBrightness = mNavigator->getAverageBrightness();
 
     // 灰色検出を試みる
-    if( avgBrightness >= 30.0 && avgBrightness <= 36.0 &&
-        (mLineMonitor->getMaxBrightness() - mLineMonitor->getMinBrightness()) < 12 ){
+    if( avgBrightness >= GRAY_BAND_MIN && avgBrightness <= GRAY_BAND_MAX &&
+        (mNavigator->getMaxBrightness() - mNavigator->getMinBrightness()) < 18 ){
         //mLogging->send(avgBrightness);
 
         // 直進中なら、灰色マーカの可能性大
@@ -66,25 +70,25 @@ int LineTracer::run() {
         //{
             mAvgCnt++;
             // 灰色マーカかも
-            if( mAvgCnt >= 50 ){
+            if( mAvgCnt >= 16 ){
                 if (mSubState == 0 ) ev3_speaker_play_tone(NOTE_D4, 200);
                 mSubState = 1; // 灰色マーカモード
-                speed = 20;    // スピードを抑えめに
+                speed = 30;    // スピードを抑えめに
                 // 閾値 明るめに変えるよ
-                mGrayThreshold = (int)avgBrightness;
-                mLineMonitor->setThreshold(mGrayThreshold);
+                mGrayThreshold = (int)avgBrightness+6;
+                mNavigator->setThreshold(mGrayThreshold);
             }
         //}
         //else
         //{
-            ;
+        //    ;
         //}
     }
     // 黒か白だよ
     else {
         mSubState = 0;
         speed = 50;
-        mLineMonitor->setThreshold(LineMonitor::INITIAL_THRESHOLD);
+        mNavigator->setThreshold(Navigator::INITIAL_THRESHOLD);
         mAvgCnt = 0;
     }
 
@@ -106,7 +110,7 @@ int LineTracer::calcDirection(int brightness){
     int turn;
     /* PID 制御用　操作量の算出 */
     /* 観測値を取得 */
-    e_t = (float)(mLineMonitor->getThreshold()- brightness); /* 偏差を算出 */
+    e_t = (float)(mNavigator->getThreshold()- brightness); /* 偏差を算出 */
 
     // PID制御
     int_e_t = int_e_t + e_t * INTERVAL; /* 積分項を算出 */
@@ -114,12 +118,13 @@ int LineTracer::calcDirection(int brightness){
     u_t = KP * (e_t + int_e_t / TI + TD * der_e_t); /* 操作量を計算 */
 
     // 灰色なら
-    // if ( mSubState == 1){
-    //     if( u_t < 0 ){
-    //         u_t = u_t * 0.3; // ハンドル操作を抑制
-    //     }
-    // }
+    if ( mSubState == 1){
+        if( u_t < 0 ){
+            u_t = u_t * 0.1; // ハンドル操作を抑制
+        }
+    }
     
+    // ハンドル抑制
     u_t = u_t * 0.9;
 
     temp_turn = -(int)u_t; /* 操作量を整数化 */

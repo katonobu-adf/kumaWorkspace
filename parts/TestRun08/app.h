@@ -15,13 +15,10 @@ extern "C" {
 /*
  *  各タスクの優先度の定義
  */
-#define MAIN_PRIORITY    TMIN_APP_TPRI + 1  /* メインタスクの優先度 */
-#define TRACER_PRIORITY  TMIN_APP_TPRI + 2
-#define READY_PRIORITY  TMIN_APP_TPRI + 3
-
-// 奥山追加 <begin>
-#define BT_TASK_PRIORITY  TMIN_APP_TPRI + 3
-// 奥山追加 <end>
+#define MAIN_PRIORITY     TMIN_APP_TPRI + 1  /* メインタスクの優先度 */
+#define RACER_PRIORITY    TMIN_APP_TPRI + 2
+#define READY_PRIORITY    TMIN_APP_TPRI + 3
+#define BT_TASK_PRIORITY  TMIN_APP_TPRI + 4
 
 /*
  *  ターゲットに依存する可能性のある定数の定義
@@ -40,9 +37,7 @@ extern void ev3_cyc_task_runer(intptr_t exinf);
  *　ev3_cyc_task_runer内で実行されるタスク
  */
 extern void ready_task(intptr_t exinf);
-extern void tracer_task(intptr_t exinf);
-
-// 奥山追加 <begin>
+extern void racer_task(intptr_t exinf);
 extern void bt_task(intptr_t exinf);
 
 // 奥山追加 <end>
