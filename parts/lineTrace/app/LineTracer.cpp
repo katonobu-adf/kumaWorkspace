@@ -27,7 +27,7 @@ LineTracer::LineTracer(
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
     : TaskHolder(navigator,lineMonitor, balancingWalker, tail) {
-        PID **pid = new PID*[5];
+        LineTracer::pid = new PID*[5];
         pid[0] = new PID(2.80, 0.444);
         pid[1] = new PID(1.50, 0.588);
         pid[2] = new PID(2.00, 0.660);
@@ -98,7 +98,7 @@ int LineTracer::calcDirection(int brightness, int forward) {
     prev_e_t = e_t;
 
     mLogging->send(turn);
-    
+
     return turn;
 }
 

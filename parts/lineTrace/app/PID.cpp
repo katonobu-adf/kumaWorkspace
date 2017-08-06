@@ -2,9 +2,9 @@
 #include "PID.h"
 
 PID::PID(float kc, float tc) {
-	this->kp = (0.6 * kc);
-	this->ti = (0.5 * tc);
-	this->td = (0.125 * tc);
+	PID::kp = (0.6 * kc);
+	PID::ti = (0.5 * tc);
+	PID::td = (0.125 * tc);
 }// end PID
 
 float PID::getKP() {
