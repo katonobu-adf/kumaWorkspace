@@ -27,7 +27,7 @@ LineTracer::LineTracer(
            Navigator* navigator,
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
-    : TaskHolder(navigator, balancingWalker, tail) {
+    : Task(navigator, balancingWalker, tail) {
         // PID テーブルの初期化
         LineTracer::pid = new PID*[5];
         pid[0] = new PID(2.80, 0.444);

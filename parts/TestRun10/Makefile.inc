@@ -8,7 +8,7 @@ APPL_CXXOBJS += \
 	BalancerCpp.o \
 	Navigator.o \
 	Driver.o \
-	TaskHolder.o \
+	Task.o \
 	ReadyToStart.o \
 	Calibration.o \
 	StartToDash.o \

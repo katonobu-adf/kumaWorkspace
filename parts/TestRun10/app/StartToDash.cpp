@@ -18,7 +18,7 @@ StartToDash::StartToDash(
            Navigator       *navigator,
            BalancingWalker *balancingWalker,
            ev3api::Motor   &tail)
-    : TaskHolder( navigator, balancingWalker, tail)
+    : Task( navigator, balancingWalker, tail)
 {
     callCount=0;
     mLogging = new Logging();

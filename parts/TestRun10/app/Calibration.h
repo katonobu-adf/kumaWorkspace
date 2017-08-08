@@ -9,11 +9,11 @@
 #ifndef   CALIBRATION_H
 #define   CALIBRATION_H
 
-#include "TaskHolder.h"
+#include "Task.h"
 #include "Logging.h"
 
-// extends TaskHolder
-class Calibration : public TaskHolder {
+// extends Task
+class Calibration : public Task {
 public:
     Calibration(
            Navigator * navigator,

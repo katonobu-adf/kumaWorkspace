@@ -13,7 +13,7 @@
 #include "Navigator.h"
 #include "LineMonitor.h"
 #include "BalancingWalker.h"
-#include "TaskHolder.h"
+#include "Task.h"
 #include "Calibration.h"
 #include "ReadyToStart.h"
 #include "StartToDash.h"
@@ -47,7 +47,7 @@ private:
     bool mIsInitialized;
 
 private:
-    TaskHolder  * mTaskHolder[10];
+    Task  * mTask[10];
     EmergencyStop * emergencyStop;
 
 private:

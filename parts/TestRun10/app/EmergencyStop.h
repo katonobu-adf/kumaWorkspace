@@ -9,10 +9,10 @@
 #ifndef   EMERGENCY_STOP_H
 #define   EMERGENCY_STOP_H
 
-#include "TaskHolder.h"
+#include "Task.h"
 
-// extends TaskHolder
-class EmergencyStop : public TaskHolder {
+// extends Task
+class EmergencyStop : public Task {
 public:
     EmergencyStop(
            Navigator * navigator,

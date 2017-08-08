@@ -12,7 +12,7 @@ Calibration::Calibration(
            Navigator * navigator,
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
-    : TaskHolder(navigator, balancingWalker, tail)
+    : Task(navigator, balancingWalker, tail)
 {
     mLogging = new Logging();
 }

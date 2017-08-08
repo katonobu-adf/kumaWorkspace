@@ -9,11 +9,11 @@
 #ifndef   START_TO_DASH_H
 #define   START_TO_DASH_H
 
-#include "TaskHolder.h"
+#include "Task.h"
 #include "Logging.h"
 
-// extends TaskHolder
-class StartToDash : public TaskHolder {
+// extends Task
+class StartToDash : public Task {
 public:
     StartToDash(
            Navigator * navigator,

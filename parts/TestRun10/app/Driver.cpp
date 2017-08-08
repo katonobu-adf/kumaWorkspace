@@ -28,10 +28,10 @@ Driver::Driver(
     mNavigator->setState(CALIBRATION);
     emergencyStop = new EmergencyStop( mNavigator, mBalancingWalker, mTail );
 
-    mTaskHolder[0] = new Calibration(  mNavigator, mBalancingWalker, mTail );
-    mTaskHolder[1] = new ReadyToStart( mNavigator, mBalancingWalker, mTail );
-    mTaskHolder[2] = new StartToDash(  mNavigator, mBalancingWalker, mTail );
-    mTaskHolder[3] = new LineTracer(   mNavigator, mBalancingWalker, mTail );
+    mTask[0] = new Calibration(  mNavigator, mBalancingWalker, mTail );
+    mTask[1] = new ReadyToStart( mNavigator, mBalancingWalker, mTail );
+    mTask[2] = new StartToDash(  mNavigator, mBalancingWalker, mTail );
+    mTask[3] = new LineTracer(   mNavigator, mBalancingWalker, mTail );
     mLogging = new Logging();
 }
 
@@ -74,12 +74,12 @@ int Driver::run()
             return 1; // exit to Task
 
         case CALIBRATION:    // キャリブレーション
-            ret=mTaskHolder[0]->run();
+            ret=mTask[0]->run();
             if ( ret == 1 ){ mNavigator->setState(READY_TO_START);}
             break;
 
         case READY_TO_START:  // 走行体起立、合図待ち
-            ret=mTaskHolder[1]->run();
+            ret=mTask[1]->run();
             // 安定化スタートへ
             if ( ret == 1 ){ mNavigator->setState(START_TO_DASH);}
             // ライントレースへ
@@ -87,13 +87,13 @@ int Driver::run()
             break;
 
         case START_TO_DASH:   // 安定化スタート （ちょっとの間直線走行）
-            ret=mTaskHolder[2]->run();
+            ret=mTask[2]->run();
             if ( ret == 1 ){ mNavigator->setState(LINE_TRACER);}
             break;
 
         case LINE_TRACER:     // ライントレースだよ
-            mTaskHolder[3]->setCurDirection(curDirection);
-            ret=mTaskHolder[3]->run();
+            mTask[3]->setCurDirection(curDirection);
+            ret=mTask[3]->run();
             if ( ret == 1 ){ mNavigator->setState(2);}
             break;
         default:

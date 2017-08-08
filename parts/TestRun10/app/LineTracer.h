@@ -9,14 +9,14 @@
 #ifndef LINETRACER_H_
 #define LINETRACER_H_
 
-#include "TaskHolder.h"
+#include "Task.h"
 #include "Navigator.h"
 #include "LineMonitor.h"
 #include "BalancingWalker.h"
 #include "PID.h"
 #include "Logging.h"
 
-class LineTracer : public TaskHolder{
+class LineTracer : public Task{
 public:
     LineTracer(
            Navigator* navigator,

@@ -9,10 +9,10 @@
 #ifndef   READYTOSTART_H
 #define   READYTOSTART_H
 
-#include "TaskHolder.h"
+#include "Task.h"
 
-// extends TaskHolder
-class ReadyToStart : public TaskHolder {
+// extends Task
+class ReadyToStart : public Task {
 public:
     ReadyToStart(
            Navigator * navigator,
