@@ -63,7 +63,7 @@ int StartToDash::run(){
         mBalancingWalker->setCommand(speed, 0);
         // 倒立走行を行う
         mBalancingWalker->run();
-        return 1;  // 3.0s elapsed from start
+        //return 1;
     }
     // before 5th Step
     // FOURTH STEP

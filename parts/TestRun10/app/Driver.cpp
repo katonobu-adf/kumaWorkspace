@@ -17,9 +17,9 @@ const int  Driver::LINE_TRACER    =  3;   // ライントレース
 const int  Driver::WALK_ON_GRAY   =  4;   // 灰色マーカ上走行
 
 Driver::Driver(
-           Navigator * navigator,
-           BalancingWalker* balancingWalker,
-           ev3api::Motor &tail)
+           Navigator       *navigator,
+           BalancingWalker *balancingWalker,
+           ev3api::Motor   &tail)
     : mNavigator(navigator),
       mBalancingWalker(balancingWalker),
       mTail(tail),

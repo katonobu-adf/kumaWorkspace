@@ -75,7 +75,7 @@ int LineTracer::run() {
     int direction = calcDirection(brightness, forward);
     //int direction = calcDirection(avgBrightness, forward);
 
-    mBalancingWalker->setCommand(forward,direction);
+    mBalancingWalker->setCommand(forward, direction);
 
     // 倒立走行を行う
     mBalancingWalker->run();
@@ -133,7 +133,7 @@ bool LineTracer::isOnGrayMark(int brightness, int avgBrightness)
     if( avgBrightness >= GRAY_BAND_MIN && avgBrightness <= GRAY_BAND_MAX &&
         (mNavigator->getMaxBrightness() - mNavigator->getMinBrightness()) < 18 ){
 
-        return true; // ほんとに？
+        //return true; // ほんとに？
         //mLogging->send(avgBrightness);
 
         // 直進中なら、灰色マーカの可能性大

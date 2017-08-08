@@ -28,13 +28,16 @@ int Calibration::run(){
     }
  
     // 現在の明るさを求める
-    //int   brightness    = mLineMonitor->getBrightness();  
+    int   brightness    = mNavigator->getBrightness();  
+    mLogging->send(brightness);
+
     // 平均の明るさを求める
-    //float avgBrightness = mLineMonitor->getAverageBrightness();
-    // sprintf(buf, "%3d / %5.2f", brightness, avgBrightness );
-    // mLogging->send(buf);
+    //float avgBrightness = mNavigator->getAverageBrightness();
+    sprintf(buf, "Brightness:%3d", brightness );
+    ev3_lcd_draw_string( "TouchSensor to START", 0, 15);
+    ev3_lcd_draw_string( buf, 0, 30);
 
     // 何もしないで終わる
-    return 1;
-    //return 0;
+    //return 1;
+    return 0;
 }
