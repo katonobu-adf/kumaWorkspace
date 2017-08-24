@@ -62,8 +62,6 @@ int LineTracer::run() {
     
     // 試走会２用 反射光をモニタする
     mLogging->send(brightness);
-    char buf = ',';
-    mLogging->send(buf);
     
     // 平均の明るさを求める
     float avgBrightness = mNavigator->getAverageBrightness();
