@@ -20,32 +20,33 @@ public:
            BalancingWalker * balancingWalker,
            ev3api::Motor &tail);
     int run();
+
 private:
     // ログ取得用
     Logging* mLogging;
     char buf[128];
 
-// 佐々木
-    void dispAmbient();
+// 佐々木 <begin>
+    // 今後メインで使うメソッド
     void setWhite();
     void setBlack();
-    void checkCalibration();
     void confirmation();
+    // 使う予定のないメソッド（残しているだけ）
+    void dispAmbient();
     void dispBrightness();
+    void checkCalibration();
     
-    // 黒と白の値の保持
-    int black;
-    int white;
-
-    // 目標の明るさを設定する変数
-    int configBrightness;
-
-
     // 処理切り替え用
-    int toggle = 0;   // 環境光と反射光採取の切り替え
-    int interval = 0; // タッチセンサーを押したときのクールダウン
+    int toggle = 0;         // キャリブレートの段階表す変数
+    int interval = 0;       // クールダウンのタイマー変数
 
-// 佐々木
+    // ディスプレイでの表示をわかりやすくするための変数
+    static const int LINE_SPACING; // 表示する時の、行の間隔を設定
+
+    // dispBrightness で使用（今後使う予定のないメソッド）
+    int configBrightness;   // 取得したい明るさを指定
+
+// 佐々木 <end>
 };
 
 

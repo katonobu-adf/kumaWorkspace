@@ -8,6 +8,8 @@
 
 #include "Calibration.h"
 
+const int Calibration::LINE_SPACING = 15; // 行間隔を設定(縦方向)
+
 Calibration::Calibration(
            Navigator * navigator,
            BalancingWalker* balancingWalker,
@@ -17,100 +19,95 @@ Calibration::Calibration(
     mLogging = new Logging();
 }
 
+
 // Override
 int Calibration::run(){
-    
+
+    // やり直す
+    if(ev3_button_is_pressed(DOWN_BUTTON)){
+        sprintf(buf, "ReS");
+        ev3_lcd_draw_string( buf, 0, LINE_SPACING * 0);
+        toggle = 0;
+
+    }
+    // キャリブレーションを進める
     if(mNavigator->isTouchPressed() ||
         mNavigator->getBtCommand() == 1)
     {
+        // クールダウンが発生していないか？
         if(interval <= 0){
-            ++toggle;       // 次の段階へ(２で終了)
-            interval = 250; // クールダウンへ(4ms * 250 = 1s)
+            ++toggle;       // 次の処理へ移る
+            interval = 250; // 1秒のクールダウン発生
         }
+
     }
     
+    // toggleにより処理を開始する
     switch(toggle){
         case 0:
-            dispAmbient();      // 環境光採取
-            break;
-        case 1:
             setWhite();   // 白の値の採取
             break;
-        case 2:
+        case 1:
             setBlack();   // 黒の値の採取
             break;
-        case 3:
+        case 2:
             confirmation(); // キャリブレートの確認
             break;
+
         default:
             sprintf(buf, "Start!");
-            ev3_lcd_draw_string( buf, 0, 90);
+            ev3_lcd_draw_string( buf, 0, LINE_SPACING * 0);
             return 1;
+
             break;
     }
+
     if(interval > 0){
-        --interval;         // もしクールダウン中ならカウントを減らす
+        --interval;         // クールダウンのカウントを減らす
     }
-    
     return 0;
 }
-void Calibration::dispAmbient(){
-    
-    // 現在の環境光を測る
-    int   ambient    = mNavigator->getAmbient();  
 
-    sprintf(buf, "Ambient:%3d", ambient );
-    ev3_lcd_draw_string( buf, 0, 15);
-}
 
+// 白の値を測定し、Navigatorへ渡す
 void Calibration::setWhite(){
 
-    // 白の明るさを測る
-    white = mNavigator->getBrightness();  
-    sprintf(buf, "White:%3d", white );
-    ev3_lcd_draw_string( buf, 0, 45);
+    int white = mNavigator->getBrightness();
+    sprintf(buf, "White:%3d", white);
+    ev3_lcd_draw_string( buf, 0, LINE_SPACING * 1);
 
     mNavigator->setWhite(white);
 }
 
+// 黒の値を測定し、Navigatorへ
 void Calibration::setBlack(){
     
-    // 黒の明るさを測る
-    black = mNavigator->getBrightness();  
-    sprintf(buf, "Black:%3d", black );
-    ev3_lcd_draw_string( buf, 0, 60);
+    int black = mNavigator->getBrightness();
+    sprintf(buf, "Black:%3d", black);
+    ev3_lcd_draw_string( buf, 0, LINE_SPACING * 2);
 
     mNavigator->setBlack(black);
 }
 
-
+// 白と黒の値で計算した、他の値の確認（灰色、しきい値など）
 void Calibration::confirmation(){
-    
-    // 確認
-    ev3_led_set_color(LED_ORANGE);
-    sprintf(buf, "OK?");
-    ev3_lcd_draw_string( buf, 0, 90);
 
-    // 灰色の値を表示する
-    mNavigator->setGray(black + 25);                    // 黒の値に任意の値を足して灰色の値として記録する
+    // 灰色の値の表示
+    int gray = mNavigator->getBlack() + 25; // 黒の値に任意の値を足して、灰色の値として記録する
+    mNavigator->setGray(gray);
     sprintf(buf, "Gray:%3d", mNavigator->getGray());
-    ev3_lcd_draw_string( buf, 30, 90);
+    ev3_lcd_draw_string( buf, 0, LINE_SPACING * 4);
 
-
-    // 黒の閾値を計算しディスプレイ表示
-    int8_t threshold = ( 13 * (white + mNavigator->getGray()) ) / 33; // 任意の計算方法でしきい値を出す
-
+    // LineTracer で利用するしきい値の表示
+    int8_t threshold = ( 13 * (mNavigator->getWhite() + mNavigator->getGray()) ) / 33; // 白と灰色の値の合計を任意の値で割って決める
     mNavigator->setThreshold(threshold);
     sprintf(buf, "Threshold:%3d", mNavigator->getThreshold());
-    ev3_lcd_draw_string( buf, 0, 105);
-    
-    // やり直し
-    if(ev3_button_is_pressed(DOWN_BUTTON)){
-        sprintf(buf, "ReS");
-        ev3_lcd_draw_string( buf, 0, 90);
-        toggle = 0;
+    ev3_lcd_draw_string( buf, 50, LINE_SPACING * 4);
 
-    }
+
+    // 値を確認する
+    sprintf(buf, "OK?");
+    ev3_lcd_draw_string( buf, 0, LINE_SPACING * 5);    
 }
 
 
@@ -118,21 +115,30 @@ void Calibration::confirmation(){
 
 
 // 試走会２で使わないもの
+
+void Calibration::dispAmbient(){
+    
+    // 現在の環境光を測る
+    int ambient = mNavigator->getAmbient();  
+
+    sprintf(buf, "Ambient:%3d", ambient );
+    ev3_lcd_draw_string( buf, 0, 15);
+}
+
 void Calibration::dispBrightness(){
 
-    // 目標の明るさを設定する
+    // 取得したい明るさを指定
     if(interval <= 0){
         if(ev3_button_is_pressed(UP_BUTTON)){
             ++configBrightness;
-            interval = 50; // クールダウン発生
-
+            interval = 50; // 0.1秒クールダウン
         }else if(ev3_button_is_pressed(DOWN_BUTTON)){
             --configBrightness;
-            interval = 50; // クールダウン発生
+            interval = 50; // 0.1秒クールダウン
+
         }
     }
-
-    // 横に表示する
+    // 表示位置を設定
     sprintf(buf, "config:%3d", configBrightness);
     ev3_lcd_draw_string(buf, 100, 30);
 
@@ -143,21 +149,23 @@ void Calibration::dispBrightness(){
 
     if(brightness == configBrightness){
         ev3_led_set_color(LED_GREEN);
-
     }else{
         ev3_led_set_color(LED_ORANGE);
+
     }
 }
 
 void Calibration::checkCalibration(){
     
     // 現在の反射光を計測
-    int   brightness    = mNavigator->getBrightness();  
+    int brightness = mNavigator->getBrightness();  
+    
     sprintf(buf, "Brightness:%3d", brightness );
     ev3_lcd_draw_string( buf, 0, 75);
     
     // キャリブレーションが上手くいっているか
     int calibratedValue = mNavigator->calibrate(brightness);
+
     sprintf(buf, "calibrate:%3d", calibratedValue );
     ev3_lcd_draw_string( buf, 100, 75);
 }
