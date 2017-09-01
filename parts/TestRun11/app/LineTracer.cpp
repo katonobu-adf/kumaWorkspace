@@ -48,8 +48,8 @@ int LineTracer::run() {
 
     // 初期化処理 (最初1回だけ)
     if (mIsInitialized == false) {
-        // BalancingWalkerのinit()は、StartToDash()クラスにて実行
-        // mBalancingWalker->init();
+        // mBalancingWalker->init(); // ReadyToStart()クラスにて実行
+
         mIsInitialized = true;
         mAvgCnt=0;
     }
@@ -59,13 +59,14 @@ int LineTracer::run() {
 
     // 現在の明るさを求める
     int   brightness    = mNavigator->getBrightness();
-    
-    // 試走会２用 反射光をモニタする
-    // mLogging->send(brightness);
-    
+
     // 平均の明るさを求める
     float avgBrightness = mNavigator->getAverageBrightness();
+    
+    // 反射光のロギング
+    // mLogging->send(brightness);
 
+    
     // 灰色マーカの上か？
     if ( isOnGrayMark(brightness, avgBrightness) ) {
         // 灰色マーカの上に対応した処理を行う
@@ -81,7 +82,6 @@ int LineTracer::run() {
     // 走行体の向きを計算する
     int direction = calcDirection(brightness, forward);
     //int direction = calcDirection(avgBrightness, forward);
-
 
     // 普通のライントレースを行う
     mBalancingWalker->setCommand(forward, direction);

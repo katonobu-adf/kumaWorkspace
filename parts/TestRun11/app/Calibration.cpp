@@ -10,7 +10,7 @@
 
 const int Calibration::LINE_SPACING = 15;   // 行間隔を設定(縦方向)
 const int Calibration::INTERVAL     = 250;  // タッチセンサーを押したときのクールダウンの時間
-const int Calibration::ADD_GRAY     = 25;   // 灰色の値に近づかせるため、black に足す値
+const int Calibration::ADD_GRAY     = 25;   // 灰色の明るさに近づかせるため、黒の値に足す値
 
 Calibration::Calibration(
            Navigator * navigator,
@@ -36,7 +36,7 @@ int Calibration::run(){
 
     // キャリブレーションを進める
     if(mNavigator->isTouchPressed() ||
-        mNavigator->getBtCommand() == 1)
+        ev3_button_is_pressed(ENTER_BUTTON))
     {
         // クールダウンが発生していないか？
         if(interval <= 0){
@@ -116,9 +116,6 @@ void Calibration::confirmation(){
 
     /*
      *変更点１: black の値に いくらの値を足して灰色の値として記録するか
-     *
-     *灰色の値を計算し記録する
-     *
      */
     int gray = mNavigator->getBlack() + ADD_GRAY; // 黒の値に任意の値を足して、灰色の値として記録する
 

@@ -23,7 +23,7 @@ int ReadyToStart::run(){
     mBalancingWalker->init();
     int tailState=tail_control(TAIL_ANGLE_STAND_UP);
 
-    // スタートの準備の終わりを、LED で知らせる
+    // スタートの準備の終わりを LED で知らせる
     ev3_led_set_color(LED_GREEN);
     
     if ( tailState == 1 ){
