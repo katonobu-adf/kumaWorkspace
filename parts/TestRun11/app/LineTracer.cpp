@@ -99,10 +99,10 @@ int LineTracer::run() {
 int LineTracer::calcForward(int turn) {
     
     // forward の値を自動で決めて走行する
-    // return (100 - (abs(turn) / 25 * 10)) / 2; // 60 - 100
+    return (100 - (abs(turn) / 25 * 10)); // 60 - 100
     
     // forward の値を事前に決めて走行する
-    return 80;
+    // return 80;
 }// end calcForward
 
 

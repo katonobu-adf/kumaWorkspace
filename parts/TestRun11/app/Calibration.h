@@ -27,21 +27,26 @@ private:
     char buf[128];
 
 // 佐々木 <begin>
+    // 定数
+    static const int LINE_SPACING;  // 表示する時の、行の間隔を設定
+    static const int INTERVAL;      // タッチセンサーを押したときのクールダウンの秒数
+    static const int ADD_GRAY;      // 灰色に近づかせる値を設定
+
     // 今後メインで使うメソッド
+    void dispAmbient();
     void setWhite();
     void setBlack();
     void confirmation();
+
     // 使う予定のないメソッド（残しているだけ）
-    void dispAmbient();
     void dispBrightness();
     void checkCalibration();
-    
+
     // 処理切り替え用
     int toggle = 0;         // キャリブレートの段階表す変数
     int interval = 0;       // クールダウンのタイマー変数
 
-    // ディスプレイでの表示をわかりやすくするための変数
-    static const int LINE_SPACING; // 表示する時の、行の間隔を設定
+    
 
     // dispBrightness で使用（今後使う予定のないメソッド）
     int configBrightness;   // 取得したい明るさを指定
