@@ -50,6 +50,7 @@ LineTracer::LineTracer(
         mLogging = new Logging();
         callCount = 0;
         temp_turn = 0;
+        temp_forward = 0;
 }
 
 /**
@@ -84,7 +85,8 @@ int LineTracer::run() {
     //     ;
     // }
 
-    forward = calcForward(temp_turn);
+    forward = calcForward(temp_turn, temp_forward);
+    temp_forward = forward;
 
     // forwardのロギング
     // mLogging->send(forward);
@@ -113,39 +115,54 @@ int LineTracer::run() {
     return 0;
 }
 
-int LineTracer::calcForward(int turn) {
+int LineTracer::calcForward(int turn, int forward) {
     
     // forward の値を自動で決めて走行する
     // return (100 - (abs(turn) / 25 * 10)); // 60 - 100
 
-    int forward;
+    int f;
     int ratio = abs(turn) + 5;
     ratio /= 10;
 
     switch (ratio) {
         case 0:// 0 ~ 4
-            forward = HIGHTOP;
+            f = calcControler(forward, HIGHTOP);
             break;
         case 1:// 5 ~ 14
-            forward = TOP;
+            f = calcControler(forward, TOP);
             break;
         case 2:// 15 ~ 24
-            forward = THIRD;
+            f = calcControler(forward, THIRD);
             break;
         case 3:// 25 ~ 34
-            forward = SECOND;
+            f = calcControler(forward, SECOND);
             break;
         default:// 35 ~ 100
-            forward = LOW;
+            f = calcControler(forward, LOW);
             break;
     }// switch
 
-    return forward;
+    return f;
     
     // forward の値を事前に決めて走行する
     // return 80;
 }// end calcForward
 
+int LineTracer::calcControler(int forward, int gear) {
+    if (forward == gear) {
+        return gear;
+    } else if (forward > gear) {
+        if (forward - gear > 10)
+            return forward - 10;
+        else
+            return gear;
+    } else {
+        if (gear - forward > 10)
+            return forward + 10;
+        else
+            return gear;
+    }// end if
+}// end calcControler
 
 // <begin>
 int LineTracer::calcDirection(int brightness, int forward){

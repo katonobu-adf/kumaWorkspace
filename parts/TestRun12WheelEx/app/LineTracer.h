@@ -43,6 +43,7 @@ private:
     float prev_e_t= 0;         /* 1 ステップ前の偏差 */
     float u_t;                 /* 操作量計算領域（実数） */
     int   temp_turn;           /* 操作量計算領域（整数） */
+    int   temp_forward;
     unsigned short int m_val;  /* 観測値 */
 
 //  灰色マーカ検知のしきい値
@@ -70,7 +71,8 @@ protected:
 
 private:
     // 最適なスピードを計算する
-    int  calcForward(int turn);
+    int  calcForward(int turn, int forward);
+    int calcControler(int forward, int gear);
     
     // 一応残しておく (元の引数1バージョン)
     // int calcDirection(int brightness);
