@@ -1,0 +1,47 @@
+LookUpGateクラスの追加機能利用方法
+
+---------------------
+手順1.Driver.hクラスにメンバー追加（アクセス修飾子はprivate）
+
+    LookUpGate *lookUpGate;
+
+---------------------
+手順2.Driver.cppクラスのコンストラクタ内でTaskのインスタンス生成を変更
+
+変更前のイメージ）
+
+    mTask[5] = new LookUpGate(   mNavigator, mBalancingWalker, mTail );
+
+変更後のイメージ）
+
+    lookUpGate = new LookUpGate(   mNavigator, mBalancingWalker, mTail );
+
+
+---------------------
+手順3.Driver.cppクラスのrunメソッドの以下の部分（LOOK_UP_GATEへの切替）を変更
+
+変更前のイメージ）
+
+        case SPEED_DOWN:
+            ret = speedDown->run();
+            if ( ret == 1 ){ mNavigator->setState(LOOK_UP_GATE);}
+            break;
+        case LOOK_UP_GATE:     // ルックアップゲート
+            ret = mTask[LOOK_UP_GATE]->run();
+            break;
+
+
+変更後のイメージ）
+
+        case SPEED_DOWN:
+            ret = speedDown->run();
+            if ( ret == 1 ){
+                lookUpGate->setLineTraced(true); // false（初期値）でライントレースなし（
+                lookUpGate->setRunningMode(1);   // 0で尻尾走行で前後、1で超信地旋回（その場180°スピン）
+                mNavigator->setState(LOOK_UP_GATE);
+            }
+            break;
+        case LOOK_UP_GATE:     // ルックアップゲート
+            ret = lookUpGate->run();
+            break;
+
