@@ -43,11 +43,9 @@ public:
     void   recordGyro(void);
     float  getPosture(void);
 
-    // 佐々木追加<begin>
     static const int8_t initialThreshold = 0;
     void setThreshold(int8_t threshold);
     int8_t getThreshold();
-    // 佐々木追加 <end>
 
     // 照度センサ値の取得
     int    getBrightness();
@@ -62,7 +60,6 @@ public:
     // センサー値保存用バッファのサイズ
     static const int ARRAY_SIZE;
 
-    // 佐々木追加 <begin>
     int  white;
     void setWhite(int white);
     int  getWhite();
@@ -76,7 +73,6 @@ public:
     int getGray();
     
     int calibrate(int brightness);
-    // 佐々木追加 <end>
 
 private:
     LineMonitor           *mLineMonitor;

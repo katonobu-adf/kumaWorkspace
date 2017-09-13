@@ -14,11 +14,16 @@ const int  Driver::CALIBRATION    =  0;   // キャリブレーション
 const int  Driver::READY_TO_START =  1;   // スタート前起立 (Start合図待ち)
 const int  Driver::START_TO_DASH  =  2;   // (安定化) スタート
 const int  Driver::LINE_TRACER    =  3;   // ライントレース
-// ADF)加藤
+
 // 灰色マーカを廃止して番号を詰めた
 const int  Driver::SPEED_DOWN     =  4;   // 難所前のつなぎ
 const int  Driver::LOOK_UP_GATE   =  5;   // ルックアップゲート
-// ADF)加藤
+
+const int COLLAPSE = 10000;
+const int EMERGENCY_CALL_DURATION = 500;
+const int SPEED_DOWN_UPPER = 90;
+const int SPEED_DOWN_LOWER = 20;
+const int SPEED_DOWN_DURATION = 4000;
 
 Driver::Driver(
            Navigator       *navigator,
@@ -58,7 +63,7 @@ int Driver::run()
         // ナビに現在の本体の姿勢を訊いてみる
         float curPosture = mNavigator->getPosture();
         // 姿勢がどう考えても倒れているようなら、モータを止める
-        if( curPosture < -10000 || curPosture > 10000 ){
+        if( curPosture < -COLLAPSE || curPosture > COLLAPSE ){
             mNavigator->setState(EMERGENCY_STOP);
         }
     }
@@ -76,38 +81,38 @@ int Driver::run()
     // 緊急停止の時は Driver::run()自体が return 1; => タスク終了
     switch(state){
         case EMERGENCY_STOP: // 緊急停止！
-            ev3_speaker_play_tone(NOTE_C5, 500);
+            ev3_speaker_play_tone(NOTE_C5, EMERGENCY_CALL_DURATION);
             emergencyStop->stop();
             return 1; // exit to Task
 
         case CALIBRATION:    // キャリブレーション
-            ret=mTask[0]->run();
+            ret = mTask[0]->run();
             if ( ret == 1 ){ mNavigator->setState(READY_TO_START);}
             break;
 
         case READY_TO_START:  // 走行体起立、合図待ち
-            ret=mTask[1]->run();
+            ret = mTask[1]->run();
             // 安定化スタートへ
             if ( ret == 1 ){ mNavigator->setState(START_TO_DASH);}
             break;
 
         case START_TO_DASH:   // 安定化スタート （ちょっとの間直線走行）
-            ret=mTask[2]->run();
+            ret = mTask[2]->run();
             if ( ret == 1 ){ mNavigator->setState(LINE_TRACER);}
             break;
 
         case LINE_TRACER:     // ライントレースだよ
             mTask[3]->setCurDirection(curDirection);
-            ret=mTask[3]->run();
-            // ADF)加藤
+            ret = mTask[3]->run();
+
             if ( ret == 1 ){
                 // 以下は forward90 > 20 へ4000msecで移行するという意味
-                speedDown->setParameter(90, 20, 4000);
+                speedDown->setParameter(SPEED_DOWN_UPPER, SPEED_DOWN_LOWER, SPEED_DOWN_DURATION);
                 mNavigator->setState(SPEED_DOWN);
             }
-            // ADF)加藤
+
             break;
-        // ADF)加藤
+
         case SPEED_DOWN:
             ret = speedDown->run();
             if ( ret == 1 ){ mNavigator->setState(LOOK_UP_GATE);}
@@ -115,16 +120,13 @@ int Driver::run()
         case LOOK_UP_GATE:     // ルックアップゲート
             ret = mTask[LOOK_UP_GATE]->run();
             break;
-        // ADF)加藤
         default:
             break;
     }
     return 0;
 }
 
-// ADF)加藤
 int Driver::getState()
 {
     return mNavigator->getState();
 }
-// ADF)加藤

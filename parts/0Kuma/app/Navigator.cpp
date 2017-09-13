@@ -21,7 +21,6 @@ Navigator::Navigator( LineMonitor         *lineMonitor,
 {
     mState     = 0;
     mBtCommand = 0;
-
     startIdx   = 0;
     insertIdx  = 0;
     numOfSize  = 0;
@@ -77,30 +76,31 @@ void Navigator::recordVector(void)
 
     mLvec[ insertIdx % ARRAY_SIZE ] = lvec;
     mRvec[ insertIdx % ARRAY_SIZE ] = rvec;
-    insertIdx = (insertIdx+1) % ARRAY_SIZE;
+    insertIdx = (insertIdx + 1) % ARRAY_SIZE;
     if( numOfSize < ARRAY_SIZE ) numOfSize++;
 }
 
 // 移動方向(ベクタ)の平均の取得
 float  Navigator::getVector(void){
 
-    int def=0;
+    int def = 0;
     float avg;
 
     // 差分の平均を求める
-    for( int i=0; i<ARRAY_SIZE; i++){
+    for( int i = 0; i < ARRAY_SIZE; i++){
         if( i >= numOfSize ) break;
-        def += (mLvec[i]-mRvec[i]);
+        def += (mLvec[i] - mRvec[i]);
     }
 
-    avg = (float)def/numOfSize/360.0;
+    avg = (float)def / numOfSize / 360.0;
+
     return avg;
 }
 void   Navigator::recordGyro(void){
     int velocity;
     velocity = mBalancingWalker->getSavedVelocity();
     mVelocity[ insertIdxV % ARRAY_SIZE ] = velocity;
-    insertIdxV = (insertIdxV+1) % ARRAY_SIZE;
+    insertIdxV = (insertIdxV + 1) % ARRAY_SIZE;
     if( numOfSizeV < ARRAY_SIZE ) numOfSizeV++;
 }
 
@@ -108,7 +108,7 @@ float  Navigator::getPosture(void){
     float velocityInt = 0.0;
 
     // velocityの合計を求める
-    for( int i=0; i<ARRAY_SIZE; i++){
+    for( int i = 0; i < ARRAY_SIZE; i++){
         if( i >= numOfSizeV ) break;
         velocityInt += mVelocity[i];
     }

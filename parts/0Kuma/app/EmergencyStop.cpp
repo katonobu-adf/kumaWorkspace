@@ -8,6 +8,8 @@
 
 #include "EmergencyStop.h"
 
+const int TAIL_ANGLE_GAIN = 10;
+
 EmergencyStop::EmergencyStop(
            Navigator * navigator,
            BalancingWalker* balancingWalker,
@@ -34,6 +36,6 @@ int EmergencyStop::stop(){
     // Test
 
     mBalancingWalker->stop();
-    tail_control( TAIL_ANGLE_DRIVE, 10 );
+    tail_control( TAIL_ANGLE_DRIVE, TAIL_ANGLE_GAIN );
     return 1;
 }

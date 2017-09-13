@@ -11,6 +11,8 @@
 // using宣言
 using ev3api::Motor;
 
+const int TONE_DURATION = 200;
+
 // オブジェクトの定義
 
 /**
@@ -24,7 +26,6 @@ SpeedDown::SpeedDown(
            BalancingWalker* balancingWalker,
            ev3api::Motor &tail)
     : LineTracer (navigator, balancingWalker, tail) {
-
         currForward = 0;
         targetForward = 0;
         transitionTime = 0;
@@ -49,6 +50,7 @@ int SpeedDown::run() {
     } else {
         currForward -= forwardDiff;
     }
+
     // 現在の明るさを求める
     int   brightness    = mNavigator->getBrightness();
     // 走行体の向きを計算する
@@ -56,15 +58,17 @@ int SpeedDown::run() {
 
     mBalancingWalker->setCommand(currForward , direction);
     mBalancingWalker->run();
+
     if (currForward <= targetForward) {
         return 1;
     }
+
     return 0;
 }
 
 
 void SpeedDown::setParameter(int currForward, int targetForward, int transitionTime) {
-    ev3_speaker_play_tone(NOTE_C4, 200);
+    ev3_speaker_play_tone(NOTE_C4, TONE_DURATION);
 
     this->currForward = currForward;
     this->targetForward = targetForward;

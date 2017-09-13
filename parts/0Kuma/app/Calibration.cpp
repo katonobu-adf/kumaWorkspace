@@ -12,6 +12,9 @@ const int Calibration::LINE_SPACING = 15;   // 行間隔を設定(縦方向)
 const int Calibration::INTERVAL     = 250;  // タッチセンサーを押したときのクールダウンの時間
 const int Calibration::ADD_GRAY     = 31;   // 灰色の明るさに近づかせるため、黒の値に足す値
 
+const int L_COE = 35;
+const int R_COE = 45;
+
 Calibration::Calibration(
            Navigator * navigator,
            BalancingWalker* balancingWalker,
@@ -26,7 +29,7 @@ int Calibration::run(){
     // キャリブレーションを最初からやり直す
     if(ev3_button_is_pressed(DOWN_BUTTON)){
         sprintf(buf, "ReS");
-        ev3_lcd_draw_string( buf, 0, 90);
+        ev3_lcd_draw_string( buf, 0, LINE_SPACING * 6);
         toggle = 0;
 
     }
@@ -43,7 +46,7 @@ int Calibration::run(){
         }
     }
     tail_control(TAIL_ANGLE_CALIBRATION);
-    
+
     // toggleにより処理を開始する
     switch(toggle){
         case 0:
@@ -125,10 +128,10 @@ void Calibration::confirmation(){
      */
     
     // Rコース用
-    // int8_t threshold = ( 9 * (mNavigator->getWhite() + mNavigator->getGray()) ) / 20; // 白と灰色の値の合計を任意の値で割る(今は 45% の値をしきい値に)
+    // int8_t threshold = ((mNavigator->getWhite() + mNavigator->getGray()) ) * R_COE * 0.01; // 白と灰色の値の合計を任意の値で割る(今は 45% の値をしきい値に)
 
     // Lコース用
-    int8_t threshold = ( 7 * (mNavigator->getWhite() + mNavigator->getGray()) ) / 20; // 白と灰色の値の合計を任意の値で割る(今は 35% の値をしきい値に)
+    int8_t threshold = ((mNavigator->getWhite() + mNavigator->getGray()) ) * L_COE * 0.01; // 白と灰色の値の合計を任意の値で割る(今は 35% の値をしきい値に)
 
     mNavigator->setThreshold(threshold);
     sprintf(buf, "Threshold:%3d", mNavigator->getThreshold());

@@ -23,11 +23,11 @@ const int LineTracer::HIGHTOP  = 100;  // KC=1.20 TC=0.792
 const float  LineTracer::GRAY_BAND_MIN = 36.0;
 const float  LineTracer::GRAY_BAND_MAX = 46.0;
 
-// ADF)加藤
 // 走行距離による別タスク移行のしきい値
 // L/Rコースのゴールまでの距離よりちょっと長いくらいを設定
 const int LineTracer::RUNNING_DISTANCE_THRESHOLD = 15500; // 1100cm
-// ADF)加藤
+
+const int PID_LENGTH = 5;
 
 /**
  * コンストラクタ
@@ -41,7 +41,7 @@ LineTracer::LineTracer(
            ev3api::Motor &tail)
     : Task(navigator, balancingWalker, tail) {
         // PID テーブルの初期化
-        LineTracer::pid = new PID*[5];
+        LineTracer::pid = new PID*[PID_LENGTH];
         pid[0] = new PID(3.00, 0.504);
         pid[1] = new PID(2.50, 0.572);
         pid[2] = new PID(2.00, 0.500);
@@ -82,13 +82,11 @@ int LineTracer::run() {
     // 倒立走行を行う
     mBalancingWalker->run();
 
-    // ADF)加藤
     // 走行距離が規定値以上になったら次のタスクへ移行する
     int runningDistance = (mNavigator->getLWheelCount() + mNavigator->getRWheelCount()) / 2;
     if (runningDistance >= RUNNING_DISTANCE_THRESHOLD) {
         return 1;
     }
-    // ADF)加藤
 
     return 0;
 }
@@ -143,7 +141,7 @@ int LineTracer::calcDirection(int brightness, int forward){
     int key = (forward - 60) / 10;
 
     // Safe Code
-    if ( key < 0 || key > 4 ) key = 0;
+    if ( key < 0 || key > PID_LENGTH - 1 ) key = 0;
 
     e_t = (float)(mNavigator->getThreshold()- brightness);
     int_e_t = int_e_t + e_t * INTERVAL;
@@ -155,10 +153,10 @@ int LineTracer::calcDirection(int brightness, int forward){
         temp_turn = TURN_MAX;
     if (temp_turn < TURN_MIN)
         temp_turn = TURN_MIN;
-    
+
     turn = (signed char)temp_turn;
     prev_e_t = e_t;
-    
+
     return turn;
 }
 

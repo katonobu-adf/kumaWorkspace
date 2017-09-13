@@ -8,7 +8,7 @@
 
 #include "Task.h"
 
-const float Task::P_GAIN=2.5F;                    /* 完全停止用モータ制御比例係数 */
+const float Task::P_GAIN = 2.5F;                    /* 完全停止用モータ制御比例係数 */
 const int   Task::PWM_ABS_MAX = 60;               /* 完全停止用モータ制御PWM絶対最大値 */
 const int   Task::TAIL_ANGLE_STAND_UP      = 88;  /* 完全停止時の角度[度] */
 const int   Task::TAIL_ANGLE_START_TO_DASH = 92;  /* スタート時、一時的に前倒し */
