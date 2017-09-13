@@ -42,11 +42,11 @@ LineTracer::LineTracer(
     : Task(navigator, balancingWalker, tail) {
         // PID テーブルの初期化
         LineTracer::pid = new PID*[5];
-        pid[0] = new PID(2.80, 0.444);
-        pid[1] = new PID(1.50, 0.588);
-        pid[2] = new PID(2.00, 0.660);
-        pid[3] = new PID(1.70, 0.732);
-        pid[4] = new PID(1.20, 0.792);
+        pid[0] = new PID(3.00, 0.504);
+        pid[1] = new PID(2.50, 0.572);
+        pid[2] = new PID(2.00, 0.500);
+        pid[3] = new PID(1.60, 0.656);
+        pid[4] = new PID(1.30, 0.816);
         mLogging = new Logging();
         callCount = 0;
         temp_turn = 0;
