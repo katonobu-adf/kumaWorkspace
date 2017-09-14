@@ -93,7 +93,15 @@ public:
 
 // 佐々木追加 <end>
 
-
+    // ADF)加藤
+    int getVelocityMax();
+    int getVelocityMin();
+    int getVelocityRange();
+    int getVelocityRangeMax();
+    int getVelocityRangeMin();
+    bool shockDetectEx(int rangeThreshold, int inHardActionCountThreshold);
+    bool shockDetectEx2(int rangeThreshold, int inHardActionCountThreshold);
+    // ADF)加藤
 
 private:
     LineMonitor           *mLineMonitor;
@@ -116,6 +124,21 @@ private:
     int   insertIdxV;
     int   startIdxV;
     int   numOfSizeV;
+
+    // ADF)加藤
+    int mVelocityMax;
+    int mVelocityMin;
+    int mVelocityRange;
+    int mVelocityRanges[300];
+    int insertIdxVr;
+    int startIdxVr;
+    int numOfSizeVr;
+    int mVelocityRangeMax;
+    int mVelocityRangeMin;
+    int inHardActionCount;
+    int prevAvgPosture;
+    // ADF)加藤
+
 };
 
 #endif  /* NAVIGATOR_H */

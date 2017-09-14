@@ -84,6 +84,7 @@ int LookUpGate::run() {
 
     int brightness;
     int direction = 0;    
+    int addtime = -80;
     
     if (lineTraced) {
         // 現在の明るさを求める
@@ -144,11 +145,16 @@ int LookUpGate::run() {
                     tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
                     mBalancingWalker->blindWalk(20, 20);
                 }
-                else if(cyc_cnt < 2050){
+                else if(cyc_cnt < 1150){
+                    // しっぽを最大角度までおろす
+                    tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
+                    mBalancingWalker->blindWalk(0, 0);
+                }
+                else if(cyc_cnt < 2350){
                     tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
                     mBalancingWalker->blindWalk(-10, -10);
                 }
-                else if(cyc_cnt < 3050){
+                else if(cyc_cnt < 3350){
                     //通過後の距離を算出する。（グレーラインまでの距離）そのあとで後ろの処理を計算して出す。！
                     tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
                     mBalancingWalker->blindWalk(20, 20);
@@ -194,6 +200,55 @@ int LookUpGate::run() {
                     mBalancingWalker->blindWalk(-50, 50);
                 }
                 else if(cyc_cnt < 3050){
+                    //通過後の距離を算出する。（グレーラインまでの距離）そのあとで後ろの処理を計算して出す。！
+                    tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
+                    mBalancingWalker->blindWalk(20, 20);
+                    active_mode = 3;
+                    ev3_speaker_play_tone(NOTE_G4, 200);
+                }
+            }
+            break;
+        case 2:
+            if(active_mode == 2){
+                //距離計算
+                Distance_update();
+                cyc_cnt++;
+                if(cyc_cnt < 200){
+                    tail_control(75);  /* ルックアップゲート角度に制御 */
+                    mBalancingWalker->run();
+                }
+                else if(cyc_cnt < 350){
+                    // しっぽをおろしていく
+                    mBalancingWalker->blindWalk(20, 20);
+                    tail_control(70);  /* ルックアップゲート角度に制御 */
+                }
+                else if(cyc_cnt < 600){
+                    // しっぽをおろしていく
+                    mBalancingWalker->blindWalk(20, 20);
+                    tail_control(65);  /* ルックアップゲート角度に制御 */
+                }
+                else if(cyc_cnt < 850){
+                    // しっぽを最大角度までおろす
+                    tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
+                    mBalancingWalker->blindWalk(20, 20);
+                }
+                else if(cyc_cnt < 1037 + addtime){
+                    mLogging->send(distance);    
+
+
+                    tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
+                    mBalancingWalker->blindWalk(-50, 50);
+                }
+                else if(cyc_cnt < 1675 + addtime){
+                    tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
+                    mBalancingWalker->blindWalk(20, 20);
+                }
+                else if(cyc_cnt < 1862 + addtime + addtime){
+                    mLogging->send(distance);    
+                    tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
+                    mBalancingWalker->blindWalk(-50, 50);
+                }
+                else if(cyc_cnt < 3050 + addtime + addtime){
                     //通過後の距離を算出する。（グレーラインまでの距離）そのあとで後ろの処理を計算して出す。！
                     tail_control(TAIL_ANGLE_LOOK_UP); /* ルックアップゲート角度に制御 */
                     mBalancingWalker->blindWalk(20, 20);

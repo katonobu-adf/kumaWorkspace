@@ -1,47 +1,47 @@
-LookUpGateƒNƒ‰ƒX‚Ì’Ç‰Á‹@”\—˜—p•û–@
+LookUpGateã‚¯ãƒ©ã‚¹ã®è¿½åŠ æ©Ÿèƒ½åˆ©ç”¨æ–¹æ³•
 
 ---------------------
-è‡1.Driver.hƒNƒ‰ƒX‚Éƒƒ“ƒo[’Ç‰ÁiƒAƒNƒZƒXCüq‚Íprivatej
+æ‰‹é †1.Driver.hã‚¯ãƒ©ã‚¹ã«ãƒ¡ãƒ³ãƒãƒ¼è¿½åŠ ï¼ˆã‚¢ã‚¯ã‚»ã‚¹ä¿®é£¾å­ã¯privateï¼‰
 
     LookUpGate *lookUpGate;
 
 ---------------------
-è‡2.Driver.cppƒNƒ‰ƒX‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^“à‚ÅTask‚ÌƒCƒ“ƒXƒ^ƒ“ƒX¶¬‚ğ•ÏX
+æ‰‹é †2.Driver.cppã‚¯ãƒ©ã‚¹ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å†…ã§Taskã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆã‚’å¤‰æ›´
 
-•ÏX‘O‚ÌƒCƒ[ƒWj
+å¤‰æ›´å‰ã®ã‚¤ãƒ¡ãƒ¼ã‚¸ï¼‰
 
     mTask[5] = new LookUpGate(   mNavigator, mBalancingWalker, mTail );
 
-•ÏXŒã‚ÌƒCƒ[ƒWj
+å¤‰æ›´å¾Œã®ã‚¤ãƒ¡ãƒ¼ã‚¸ï¼‰
 
     lookUpGate = new LookUpGate(   mNavigator, mBalancingWalker, mTail );
 
 
 ---------------------
-è‡3.Driver.cppƒNƒ‰ƒX‚Ìrunƒƒ\ƒbƒh‚ÌˆÈ‰º‚Ì•”•ªiLOOK_UP_GATE‚Ö‚ÌØ‘Öj‚ğ•ÏX
+æ‰‹é †3.Driver.cppã‚¯ãƒ©ã‚¹ã®runãƒ¡ã‚½ãƒƒãƒ‰ã®ä»¥ä¸‹ã®éƒ¨åˆ†ï¼ˆLOOK_UP_GATEã¸ã®åˆ‡æ›¿ï¼‰ã‚’å¤‰æ›´
 
-•ÏX‘O‚ÌƒCƒ[ƒWj
+å¤‰æ›´å‰ã®ã‚¤ãƒ¡ãƒ¼ã‚¸ï¼‰
 
         case SPEED_DOWN:
             ret = speedDown->run();
             if ( ret == 1 ){ mNavigator->setState(LOOK_UP_GATE);}
             break;
-        case LOOK_UP_GATE:     // ƒ‹ƒbƒNƒAƒbƒvƒQ[ƒg
+        case LOOK_UP_GATE:     // ãƒ«ãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚²ãƒ¼ãƒˆ
             ret = mTask[LOOK_UP_GATE]->run();
             break;
 
 
-•ÏXŒã‚ÌƒCƒ[ƒWj
+å¤‰æ›´å¾Œã®ã‚¤ãƒ¡ãƒ¼ã‚¸ï¼‰
 
         case SPEED_DOWN:
             ret = speedDown->run();
             if ( ret == 1 ){
-                lookUpGate->setLineTraced(true); // falsei‰Šú’lj‚Åƒ‰ƒCƒ“ƒgƒŒ[ƒX‚È‚µi
-                lookUpGate->setRunningMode(1);   // 0‚ÅK”ö‘–s‚Å‘OŒãA1‚Å’´M’nù‰ñi‚»‚Ìê180‹ƒXƒsƒ“j
+                lookUpGate->setLineTraced(true); // falseï¼ˆåˆæœŸå€¤ï¼‰ã§ãƒ©ã‚¤ãƒ³ãƒˆãƒ¬ãƒ¼ã‚¹ãªã—ï¼ˆ
+                lookUpGate->setRunningMode(1);   // 0ã§å°»å°¾èµ°è¡Œã§å‰å¾Œã€1ã§è¶…ä¿¡åœ°æ—‹å›ï¼ˆãã®å ´180Â°ã‚¹ãƒ”ãƒ³ï¼‰
                 mNavigator->setState(LOOK_UP_GATE);
             }
             break;
-        case LOOK_UP_GATE:     // ƒ‹ƒbƒNƒAƒbƒvƒQ[ƒg
+        case LOOK_UP_GATE:     // ãƒ«ãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚²ãƒ¼ãƒˆ
             ret = lookUpGate->run();
             break;
 

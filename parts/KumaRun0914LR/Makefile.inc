@@ -19,6 +19,9 @@ APPL_CXXOBJS += \
 	Ev3Logger.o \
 	SpeedDown.o \
 	LookUpGate.o \
+	Step.o \
+	GarageIn.o
+	
 
 
 

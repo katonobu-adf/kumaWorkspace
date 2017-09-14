@@ -18,6 +18,8 @@ const int  Driver::LINE_TRACER    =  3;   // ライントレース
 // 灰色マーカを廃止して番号を詰めた
 const int  Driver::SPEED_DOWN     =  4;   // 難所前のつなぎ
 const int  Driver::LOOK_UP_GATE   =  5;   // ルックアップゲート
+const int  Driver::STEP   =  6;   // 階段
+const int  Driver::GARAGE_IN =  7;   // ガレージイン（Lコース）
 // ADF)加藤
 
 Driver::Driver(
@@ -39,7 +41,10 @@ Driver::Driver(
     // ADF)加藤
     // 4は独自メソッドがある関係上欠番とし、専用変数で保持
     speedDown = new SpeedDown( mNavigator, mBalancingWalker, mTail );
-    mTask[5] = new LookUpGate(   mNavigator, mBalancingWalker, mTail );
+    // mTask[5] = new LookUpGate(   mNavigator, mBalancingWalker, mTail );
+    lookUpGate = new LookUpGate(   mNavigator, mBalancingWalker, mTail );
+    mTask[6] = new Step(   mNavigator, mBalancingWalker, mTail );
+    mTask[7] = new GarageIn(   mNavigator, mBalancingWalker, mTail );
     // ADF)加藤
     mLogging = new Logging();
 }
@@ -115,10 +120,14 @@ int Driver::run()
         // ADF)加藤
         case SPEED_DOWN:
             ret = speedDown->run();
-            if ( ret == 1 ){ mNavigator->setState(LOOK_UP_GATE);}
+            if ( ret == 1 ){
+                lookUpGate->setLineTraced(true); // false（初期値）でライントレースなし（
+                lookUpGate->setRunningMode(0);   // 0で尻尾走行で前後、1で超信地旋回（その場180°スピン）
+                mNavigator->setState(LOOK_UP_GATE);
+            }
             break;
         case LOOK_UP_GATE:     // ルックアップゲート
-            ret = mTask[LOOK_UP_GATE]->run();
+            ret = lookUpGate->run();
             break;
         // ADF)加藤
         default:

@@ -19,7 +19,7 @@ ReadyToStart::ReadyToStart(
 
 // Override
 int ReadyToStart::run(){
-    
+
     if(interval > 0){
         --interval;
     }
@@ -40,7 +40,6 @@ int ReadyToStart::run(){
     sprintf(buf, "tail_angle: %d", tail_angle);
     ev3_lcd_draw_string(buf, 0, 75);
     
-
     int tailState=tail_control(tail_angle);
     mBalancingWalker->init();
 

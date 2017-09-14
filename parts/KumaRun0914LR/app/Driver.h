@@ -23,6 +23,8 @@
 // ADF)加藤
 #include "SpeedDown.h"
 #include "LookUpGate.h"
+#include "Step.h"
+#include "GarageIn.h"
 // ADF)加藤
 
 class Driver {
@@ -38,6 +40,8 @@ public:
     // ADF)加藤
     static const int  SPEED_DOWN;       // 難所前のつなぎ
     static const int  LOOK_UP_GATE;     // ルックアップゲート
+    static const int  STEP;     // 階段
+    static const int  GARAGE_IN;     // ガレージイン（Lコース）
     // ADF)加藤
 
 public:
@@ -61,6 +65,7 @@ private:
     Task  * mTask[10];
     EmergencyStop * emergencyStop;
     // ADF)加藤
+    LookUpGate *lookUpGate;
     SpeedDown *speedDown;
     // ADF)加藤
 

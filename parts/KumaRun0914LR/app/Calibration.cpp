@@ -122,14 +122,6 @@ void Calibration::confirmation(){
     sprintf(buf, "Gray:%3d", mNavigator->getGray());
     ev3_lcd_draw_string( buf, 0, LINE_SPACING * 4);
 
-    /*
-     *変更点？: 今は白と灰色の合計の 39% で今後は変える可能性があるかも
-     */
-    
-    // Rコース用
-    // int8_t threshold = ( 9 * (mNavigator->getWhite() + mNavigator->getGray()) ) / 20; // 白と灰色の値の合計を任意の値で割る(今は 45% の値をしきい値に)
-
-    // Lコース用
     int8_t threshold = ( 7 * (mNavigator->getWhite() + mNavigator->getGray()) ) / 20; // 白と灰色の値の合計を任意の値で割る(今は 35% の値をしきい値に)
 
     mNavigator->setThreshold(threshold);
