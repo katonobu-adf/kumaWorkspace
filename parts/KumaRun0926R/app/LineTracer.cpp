@@ -41,12 +41,17 @@ LineTracer::LineTracer(
            ev3api::Motor &tail)
     : Task(navigator, balancingWalker, tail) {
         // PID テーブルの初期化
-        LineTracer::pid = new PID*[5];
-        pid[0] = new PID(3.00, 0.504);
-        pid[1] = new PID(2.50, 0.572);
-        pid[2] = new PID(2.00, 0.500);
-        pid[3] = new PID(1.60, 0.656);
-        pid[4] = new PID(1.30, 0.816);
+        LineTracer::pid = new PID*[10];
+        pid[0] = new PID(3.00, 0.316);
+        pid[1] = new PID(2.50, 0.384);
+        pid[2] = new PID(2.50, 0.424);
+        pid[3] = new PID(2.00, 0.420);
+        pid[4] = new PID(2.00, 0.488);
+        pid[5] = new PID(3.00, 0.504);
+        pid[6] = new PID(2.50, 0.572);
+        pid[7] = new PID(2.00, 0.500);
+        pid[8] = new PID(1.60, 0.656);
+        pid[9] = new PID(1.30, 0.816);
         mLogging = new Logging();
         callCount = 0;
         temp_turn = 0;
@@ -167,10 +172,11 @@ int LineTracer::calcControler(int forward, int gear) {
 // <begin>
 int LineTracer::calcDirection(int brightness, int forward){
     int turn;
-    int key = (forward - 60) / 10;
+    int key = forward / 10;
+    --key;
 
     // Safe Code
-    if ( key < 0 || key > 4 ) key = 0;
+    if ( key < 0 || key > 9 ) key = 0;
 
     e_t = (float)(mNavigator->getThreshold()- brightness);
 
