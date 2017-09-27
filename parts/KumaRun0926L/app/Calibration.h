@@ -41,10 +41,10 @@ private:
     // 処理切り替え用
     int toggle = 0;
     int interval = 0;
+    
 
     // 環境光でしきい値を増減させる変数
     int ambient_suffering = 0;
-    
 
     // 使う予定のないメソッド（残しているだけ）
     void dispBrightness();

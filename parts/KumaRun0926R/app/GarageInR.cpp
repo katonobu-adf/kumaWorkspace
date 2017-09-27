@@ -85,23 +85,224 @@ int GarageInR::run() {
     if(active_mode == 1){
         ++cyc_cnt;
 
-        tail_control(TAIL_ANGLE_DETECT_LINE);
+        // 少しずつ尻尾を下す
+        // 前のフェーズで63°（荷重がかかるので場合によっては60°くらい）
+        // ここから徐々に（5°ずつくらい）80°までおろしていく
 
-        // しっぽが0.2secであがった後、
-        // 前のめりになっている間前進、その後後進
-        // 電池種類（重量）とコース地面素材に依存
-        // 机天板に合わせてある。床だと固すぎて倒れるかも。スタイロフォームは？
-        if (cyc_cnt < 50) {
-            mBalancingWalker->blindWalk(0, 0);
+        // 原理は後進時の車輪の反作用を利用してつっかえ棒をちょっとずつ立てていくイメージ
+
+        if (cyc_cnt < 100) {
+            tail_control(62);
+            mBalancingWalker->blindWalk(-3, -3);
         } else if (cyc_cnt < 150) {
-            mBalancingWalker->blindWalk(10, 10);
-        } else if (cyc_cnt < 300) {
-            mBalancingWalker->blindWalk(-10, -10);
-        } else {
+            tail_control(65);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 200) {
+            tail_control(65);
             mBalancingWalker->blindWalk(0, 0);
-        } 
+        } else if (cyc_cnt < 250) {
+            tail_control(65);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 300) {
+            tail_control(67);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 350) {
+            tail_control(67);
+            mBalancingWalker->blindWalk(0, 0);
+        } else if (cyc_cnt < 400) {
+            tail_control(67);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 450) {
+            tail_control(69);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 500) {
+            tail_control(69);
+            mBalancingWalker->blindWalk(0, 0);
+        } else if (cyc_cnt < 550) {
+            tail_control(69);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 600) {
+            tail_control(71);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 650) {
+            tail_control(71);
+            mBalancingWalker->blindWalk(0, 0);
+        } else if (cyc_cnt < 700) {
+            tail_control(71);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 750) {
+            tail_control(73);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 800) {
+            tail_control(73);
+            mBalancingWalker->blindWalk(0, 0);
+        } else if (cyc_cnt < 850) {
+            tail_control(73);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 900) {
+            tail_control(75);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 950) {
+            tail_control(75);
+            mBalancingWalker->blindWalk(0, 0);
+        } else if (cyc_cnt < 1000) {
+            tail_control(75);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 1050) {
+            tail_control(77);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 1100) {
+            tail_control(77);
+            mBalancingWalker->blindWalk(0, 0);
+        } else if (cyc_cnt < 1150) {
+            tail_control(77);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 1200) {
+            tail_control(79);
+            mBalancingWalker->blindWalk(-3, -3);
+        } else if (cyc_cnt < 1250) {
+            tail_control(79);
+            mBalancingWalker->blindWalk(0, 0);
+        } else {
+            tail_control(79);
+            mBalancingWalker->blindWalk(0, 0);
+        }
 
-        if (cyc_cnt > 750) {
+        // if (cyc_cnt < 100) {
+        //     tail_control(62);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 150) {
+        //     tail_control(65);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 200) {
+        //     tail_control(65);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 250) {
+        //     tail_control(65);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 300) {
+        //     tail_control(67);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 350) {
+        //     tail_control(67);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 400) {
+        //     tail_control(67);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 450) {
+        //     tail_control(69);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 500) {
+        //     tail_control(69);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 550) {
+        //     tail_control(69);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 600) {
+        //     tail_control(71);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 650) {
+        //     tail_control(71);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 700) {
+        //     tail_control(71);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 750) {
+        //     tail_control(73);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 800) {
+        //     tail_control(73);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 850) {
+        //     tail_control(73);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 900) {
+        //     tail_control(75);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 950) {
+        //     tail_control(75);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 1000) {
+        //     tail_control(75);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 1050) {
+        //     tail_control(77);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 1100) {
+        //     tail_control(77);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 1150) {
+        //     tail_control(77);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 1200) {
+        //     tail_control(79);
+        //     mBalancingWalker->blindWalk(-10, -10);
+        // } else if (cyc_cnt < 1250) {
+        //     tail_control(79);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else {
+        //     tail_control(79);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // }
+
+        // if (cyc_cnt < 50) {
+        //     tail_control(63);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 75) {
+        //     tail_control(65);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 100) {
+        //     tail_control(65);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 125) {
+        //     tail_control(65);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 150) {
+        //     tail_control(67);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 175) {
+        //     tail_control(67);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 200) {
+        //     tail_control(67);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 225) {
+        //     tail_control(70);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 250) {
+        //     tail_control(70);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 200) {
+        //     tail_control(70);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 225) {
+        //     tail_control(72);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 250) {
+        //     tail_control(72);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 275) {
+        //     tail_control(72);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 300) {
+        //     tail_control(75);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 325) {
+        //     tail_control(75);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // } else if (cyc_cnt < 350) {
+        //     tail_control(75);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else if (cyc_cnt < 375) {
+        //     tail_control(79);
+        //     mBalancingWalker->blindWalk(-5, -5);
+        // } else {
+        //     tail_control(79);
+        //     mBalancingWalker->blindWalk(0, 0);
+        // }
+
+        // if (cyc_cnt > 400) {
+        if (cyc_cnt > 1500) {
             // ルックアップゲートからの連続動作だと誤検出のおそれがあるので、時間を空ける
             active_mode = 2;
             Distance_init();
@@ -312,8 +513,11 @@ int GarageInR::run() {
             diff = -80;
         }
 
-        if (distance < 600) {
-            diff /= 2;
+        // 2017.9.27のレプリカコース試走では5cm程度オーバーラン気味
+        // ライン大幅ズレの場合はショートラン気味もう2cmあるとよい
+        // if (distance < 600) {
+        if (distance < 550) {
+                diff /= 2;
 
             int forwardOffsetL = 0;
             int forwardOffsetR = 0;

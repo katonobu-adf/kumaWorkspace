@@ -11,7 +11,7 @@
 
 const int Calibration::LINE_SPACING = 15;   // 行間隔を設定(縦方向)
 const int Calibration::INTERVAL     = 250;  // タッチセンサーを押したときのクールダウンの時間
-const int Calibration::ADD_GRAY     = 35;   // 灰色の明るさに近づかせるため、黒の値に足す値
+const int Calibration::ADD_GRAY     = 40;   // 灰色の明るさに近づかせるため、黒の値に足す値
 const int Calibration::DEF_AMBIENT  = 20;   // 基準とする環境光の値
 
 Calibration::Calibration(
