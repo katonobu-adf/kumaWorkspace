@@ -46,7 +46,7 @@ GarageIn::GarageIn(
     targetDistance = ((float)15.0 / 100.0) * 4 * 360;;
     tailAngleStandUp = 70;
     tailAngleDrive = 3;
-    pulse = -10;
+    pulse = -17;
     runningForLandingCount = 0;
     tailStatus = 0;
     p_gain =  2.0F;
