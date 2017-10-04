@@ -64,6 +64,7 @@ GarageInR::GarageInR(
     distanceToGarage = 550;
 
     notWhiteAreaDetected = false;
+    notYetDetectBlack = true;
 
     // mLogging = new Logging();
 }
@@ -192,7 +193,12 @@ int GarageInR::run() {
             onGroundMax.distance = distanceR;
         }
 
-        if (onGroundMin.value > grayScaleValue) {
+        if (notYetDetectBlack && onGroundMin.value > grayScaleValue) {
+            if (grayScaleValue < 15) {
+                // 黒と思われる領域を見つけたら以後は更新しない
+                // 2回目の検出で左右逆に検出されるケースがあったため
+                notYetDetectBlack = false;
+            }
             onGroundMin.time = cyc_cnt;
             onGroundMin.value = grayScaleValue;
             onGroundMin.distance = distanceR;
@@ -279,7 +285,7 @@ int GarageInR::run() {
                     // 多少無駄に走らせないと検出できない
                     // 10あたりまでつっこませるか
 
-                    if ((onGroundMax.value - grayScaleValue) > 50 && notWhiteAreaDetected == false) {
+                    if ((onGroundMax.value - grayScaleValue) > 40 && notWhiteAreaDetected == false) {
                         // 緑でもここまで来ることある
                         // 緑か黒かフラグを立てて、直進継続させて、
                         // cyc_cntで125(0.5sec)まで見る
@@ -447,7 +453,8 @@ int GarageInR::run() {
             mBalancingWalker->blindWalk(8, 8);
             int grayScaleValue = mNavigator->getGrayScale();
             
-            if ((onGroundMax.value - grayScaleValue) > 50) {
+            // if ((onGroundMax.value - grayScaleValue) > 50) {
+            if (grayScaleValue < 15) {
                 active_mode = 9;
                 cyc_cnt = 0;
                 Distance_init();
@@ -554,8 +561,9 @@ int GarageInR::judgeEnvironment(GrayScaleOnGround max, GrayScaleOnGround min) {
 
     int result = 0;
 
-    if ((max.value - min.value) > 50) {
-        // ラインらしきものを見つけている
+    // if ((max.value - min.value) > 50) {
+    if (min.value < 15) {
+            // ラインらしきものを見つけている
         if (min.distance < 50) {
         // if (min.time < 500) {
                 // かなり近い
