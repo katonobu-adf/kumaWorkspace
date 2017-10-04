@@ -144,12 +144,15 @@ int LineMonitor::calcGrayScale(uint16_t r, uint16_t g, uint16_t b) {
 
     // 普通の平均
     // result = (r + g + b) / 3;
-    // Gだけ除外するとどうなるか緑地でも他の色が反応するのでNG
-    // result = (r + b) / 2;
     // NTSC係数による加重平均（簡易版）
     result = ((2 * r) + (4 * g) + b) / 7;
-    // NTSC係数による加重平均（簡易版）の緑無し
-    // result = ((2 * r) + b) / 7;
+    // NTSC係数による加重平均（緑超強調版）
+    // result = ((2 * r) + (10 * g) + b) / 7;
+
+    // 外光によっては白地が200近くになるので閾値制御する
+    if (result > 110) {
+        result = 110;
+    }
 
     return result;
 }

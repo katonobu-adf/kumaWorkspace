@@ -73,6 +73,7 @@ private:
     int distanceToGarage;
 
     bool notWhiteAreaDetected;
+    bool notYetDetectBlack;
     
     // ログ取得用
     Logging* mLogging;
