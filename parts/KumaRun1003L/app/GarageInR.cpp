@@ -375,10 +375,10 @@ int GarageInR::run() {
 
         int grayScaleValue = mNavigator->getGrayScale();
         int threshold = (onGroundMax.value + onGroundMin.value) / 2;
-
-        int thresholdOffset = 20;
-        threshold += thresholdOffset;
         
+        int thresholdOffset = 15;
+        threshold += thresholdOffset;
+
         int diff = grayScaleValue - threshold;
 
         if (diff > 80) {
