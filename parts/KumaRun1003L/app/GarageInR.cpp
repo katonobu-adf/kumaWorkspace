@@ -407,7 +407,10 @@ int GarageInR::run() {
                 forwardOffsetL = 0;
                 forwardOffsetR = -diff * inverted;
             }
-            mBalancingWalker->blindWalk(10 + forwardOffsetL, 10 + forwardOffsetR);
+            if (((cyc_cnt - 1) % 10) == 0) {
+                // 10回に1回だけパラメータ更新
+                mBalancingWalker->blindWalk(10 + forwardOffsetL, 10 + forwardOffsetR);
+            }
         } else {
             mBalancingWalker->blindWalk(0, 0);
         }
