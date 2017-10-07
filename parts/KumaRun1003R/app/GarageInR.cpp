@@ -376,6 +376,9 @@ int GarageInR::run() {
         int grayScaleValue = mNavigator->getGrayScale();
         int threshold = (onGroundMax.value + onGroundMin.value) / 2;
         
+        int thresholdOffset = 15;
+        threshold += thresholdOffset;
+
         int diff = grayScaleValue - threshold;
 
         if (diff > 80) {
@@ -407,7 +410,10 @@ int GarageInR::run() {
                 forwardOffsetL = 0;
                 forwardOffsetR = -diff * inverted;
             }
-            mBalancingWalker->blindWalk(10 + forwardOffsetL, 10 + forwardOffsetR);
+            if (((cyc_cnt - 1) % 10) == 0) {
+                // 10回に1回だけパラメータ更新
+                mBalancingWalker->blindWalk(10 + forwardOffsetL, 10 + forwardOffsetR);
+            }
         } else {
             mBalancingWalker->blindWalk(0, 0);
         }
